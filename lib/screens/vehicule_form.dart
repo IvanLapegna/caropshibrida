@@ -116,7 +116,18 @@ class _VehiculeFormState extends State<VehiculeForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Crear Nuevo Vehículo"), centerTitle: true),
+      appBar: AppBar(
+        title: Text("Crear Nuevo Vehículo"),
+        centerTitle: true,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(4.0),
+          child: Container(
+            color: Theme.of(context).colorScheme.primary,
+            height: 3.0,
+            width: 120,
+          ),
+        ),
+      ),
       body: Center(
         child: ConstrainedBox(
           constraints: BoxConstraints(maxWidth: 600),
