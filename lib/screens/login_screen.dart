@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
-
+import '../src/theme/colors.dart';
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
@@ -39,8 +39,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final appColors = Theme.of(context).extension<AppColors>() ?? appColorsLight;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Iniciar sesión')),
+      backgroundColor: appColors.primary,
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Center(
