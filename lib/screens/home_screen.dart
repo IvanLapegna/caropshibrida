@@ -63,33 +63,70 @@ class _HomeScreenState extends State<HomeScreen> {
 
           final cars = snapshot.data!;
 
-          return ListView.builder(
-            padding: const EdgeInsets.symmetric(
-              vertical: 16.0,
-              horizontal: 80.0,
-            ),
-            itemCount: cars.length,
-            itemBuilder: (context, index) {
-              final car = cars[index];
+          return Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 900),
+              child: ListView.builder(
+                padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 16.0),
 
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
-                child: VehicleCard(
-                  car: "${car.brand} ${car.model}",
-                  licensePlate: car.licensePlate,
-                  image: car.imageUrl,
-                ),
-              );
-            },
+                itemCount: cars.length,
+                itemBuilder: (context, index) {
+                  final car = cars[index];
+
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: VehicleCard(
+                      car: "${car.brand} ${car.model}",
+                      licensePlate: car.licensePlate,
+                      image: car.imageUrl,
+                    ),
+                  );
+                },
+              ),
+            ),
           );
         },
       ),
 
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, "/add-vehicle");
-        },
-        child: const Icon(Icons.add),
+      bottomNavigationBar: BottomAppBar(
+        // Usamos el color de fondo de tu tema
+        color: Theme.of(context).colorScheme.surface,
+        elevation: 0, // Sin sombra, para que se integre
+        // Usamos un Row para poner los 3 botones
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center, // Espaciarlos
+          children: [
+            // Botón de Gastos
+            IconButton(
+              icon: const Icon(Icons.attach_money),
+              iconSize: 28.0,
+              tooltip: 'Gastos',
+              onPressed: () {
+                Navigator.pushNamed(context, "/money");
+              },
+            ),
+
+            IconButton(
+              icon: const Icon(Icons.add_circle),
+              iconSize: 28.0,
+              tooltip: 'Añadir Vehículo',
+              onPressed: () {
+                Navigator.pushNamed(context, "/add-vehicle");
+              },
+            ),
+
+            // Botón de Ajustes
+            IconButton(
+              icon: const Icon(Icons.settings),
+              iconSize: 28.0,
+              tooltip: 'Ajustes',
+              onPressed: () {
+                // ¡Recuerda definir esta ruta en MyApp.dart!
+                Navigator.pushNamed(context, "/settings");
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

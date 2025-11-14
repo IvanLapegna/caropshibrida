@@ -1,12 +1,30 @@
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:caropshibrida/models/car_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class CarService {
   final CollectionReference _carsCollection = FirebaseFirestore.instance
       .collection("cars");
 
-  Future<void> addCar(Car car) async {
+  final FirebaseStorage _storage = FirebaseStorage.instance;
+
+  Future<void> addCar(Car car, Uint8List? imageFile) async {
     try {
+      if (imageFile != null) {
+        String fileName =
+            'cars/${car.userId}/${DateTime.now().millisecondsSinceEpoch}.jpg';
+        Reference storageRef = _storage.ref().child(fileName);
+
+        UploadTask uploadTask = storageRef.putData(imageFile);
+        TaskSnapshot snapshot = await uploadTask;
+
+        String downloadUrl = await snapshot.ref.getDownloadURL();
+
+        car.imageUrl = downloadUrl;
+      }
+
       await _carsCollection.add(car.toMap());
     } catch (e) {
       print("Error al agregar el vehiculo: $e");

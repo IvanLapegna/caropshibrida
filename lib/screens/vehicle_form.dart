@@ -3,7 +3,7 @@ import 'package:caropshibrida/models/car_model.dart';
 import 'package:caropshibrida/services/car_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show Uint8List, kIsWeb;
 import 'package:caropshibrida/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
@@ -24,7 +24,7 @@ class _VehicleFormState extends State<VehicleForm> {
   final _engineController = TextEditingController();
   final _transmissionController = TextEditingController();
 
-  File? _selectedImage;
+  Uint8List? _selectedImage;
 
   late final AuthService _authService;
   late final CarService _carService;
@@ -56,8 +56,9 @@ class _VehicleFormState extends State<VehicleForm> {
       final XFile? pickedFile = await _picker.pickImage(source: source);
 
       if (pickedFile != null) {
+        final bytes = await pickedFile.readAsBytes();
         setState(() {
-          _selectedImage = File(pickedFile.path);
+          _selectedImage = bytes;
         });
       }
     } catch (e) {
@@ -76,12 +77,6 @@ class _VehicleFormState extends State<VehicleForm> {
         return;
       }
 
-      if (_selectedImage != null) {
-        print("Path de la imagen: ${_selectedImage!.path}");
-      } else {
-        print("No se seleccionó ninguna imagen.");
-      }
-
       setState(() {
         _isLoading = true;
       });
@@ -97,7 +92,8 @@ class _VehicleFormState extends State<VehicleForm> {
       );
 
       try {
-        await _carService.addCar(newCar);
+        await _carService.addCar(newCar, _selectedImage);
+        Navigator.of(context).pop();
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('Vehículo guardado con éxito.')));
@@ -285,12 +281,7 @@ class _VehicleFormState extends State<VehicleForm> {
                     child: Center(
                       child: _selectedImage == null
                           ? Text('Ninguna imagen seleccionada.')
-                          : kIsWeb // Manejo de imagen para Web vs Mobile
-                          ? Image.network(
-                              _selectedImage!.path,
-                              fit: BoxFit.cover,
-                            )
-                          : Image.file(_selectedImage!, fit: BoxFit.cover),
+                          : Image.memory(_selectedImage!, fit: BoxFit.cover),
                     ),
                   ),
                   SizedBox(height: 8.0),

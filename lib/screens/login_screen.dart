@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 import '../services/validator_service.dart';
@@ -60,7 +58,8 @@ class _LoginScreenState extends State<LoginScreen> {
       } else {
         // Usuario existe pero NO está verificado
         setState(() {
-          _errorMessage = 'Por favor, verifica tu correo antes de iniciar sesión.';
+          _errorMessage =
+              'Por favor, verifica tu correo antes de iniciar sesión.';
         });
         await _authService.signOut();
         return;
@@ -95,26 +94,25 @@ class _LoginScreenState extends State<LoginScreen> {
       if (mounted) setState(() => _errorMessage = msg);
     } catch (e) {
       // cualquier otro error no-Firebase
-      if (mounted) setState(() => _errorMessage = 'Error inesperado. Intentá nuevamente.');
+      if (mounted)
+        setState(() => _errorMessage = 'Error inesperado. Intentá nuevamente.');
     } finally {
       // Siempre quitamos el loader
       if (mounted) setState(() => _loading = false);
     }
   }
 
-
-@override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child:  Padding(
-        padding: const EdgeInsets.all(16),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 400),
               child: Column(
                 children: [
-
                   Expanded(
                     child: SingleChildScrollView(
                       child: Form(
@@ -122,7 +120,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-
                             const AuthHeader(
                               assetPath: 'assets/mainlogo.svg',
                               title: 'Iniciar Sesión',
@@ -130,16 +127,19 @@ class _LoginScreenState extends State<LoginScreen> {
                               spaceTop: 40,
                             ),
 
-
-
                             if (_errorMessage != null)
                               Container(
                                 width: double.infinity,
-                                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 10,
+                                  horizontal: 12,
+                                ),
                                 margin: const EdgeInsets.only(bottom: 12),
                                 decoration: BoxDecoration(
                                   color: Colors.red.shade50,
-                                  border: Border.all(color: Colors.red.shade200),
+                                  border: Border.all(
+                                    color: Colors.red.shade200,
+                                  ),
                                   borderRadius: BorderRadius.circular(6),
                                 ),
                                 child: Text(
@@ -150,12 +150,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
                             TextFormField(
                               controller: _emailCtrl,
-                              decoration: const InputDecoration(labelText: 'Email'),
+                              decoration: const InputDecoration(
+                                labelText: 'Email',
+                              ),
                               keyboardType: TextInputType.emailAddress,
                               validator: (v) {
                                 final value = (v ?? '').trim();
-                                if (value.isEmpty) return 'Debe ingresar correo';
-                                if (!_validatorService.isValidEmail(value)) return 'Correo inválido';
+                                if (value.isEmpty)
+                                  return 'Debe ingresar correo';
+                                if (!_validatorService.isValidEmail(value))
+                                  return 'Correo inválido';
                                 return null;
                               },
                               onChanged: (_) => _resetErrors(),
@@ -163,11 +167,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             const SizedBox(height: 12),
                             TextFormField(
                               controller: _passCtrl,
-                              decoration: const InputDecoration(labelText: 'Contraseña'),
+                              decoration: const InputDecoration(
+                                labelText: 'Contraseña',
+                              ),
                               obscureText: true,
                               validator: (v) {
                                 final value = v ?? '';
-                                if (value.isEmpty) return 'Debe ingresar contraseña';
+                                if (value.isEmpty)
+                                  return 'Debe ingresar contraseña';
                                 return null;
                               },
                               onChanged: (_) => _resetErrors(),
@@ -181,7 +188,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ? const SizedBox(
                                         width: 20,
                                         height: 20,
-                                        child: CircularProgressIndicator(strokeWidth: 2, valueColor: AlwaysStoppedAnimation<Color>(Colors.white)),
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                Colors.white,
+                                              ),
+                                        ),
                                       )
                                     : const Text('Entrar'),
                               ),
@@ -190,27 +203,23 @@ class _LoginScreenState extends State<LoginScreen> {
                           ],
                         ),
                       ),
-                    )
+                    ),
                   ),
 
                   Padding(
                     padding: const EdgeInsets.only(bottom: 12.0, top: 8.0),
                     child: TextButton(
-                      onPressed: () => Navigator.of(context).pushReplacementNamed('/login'),
+                      onPressed: () => Navigator.of(
+                        context,
+                      ).pushReplacementNamed('/register'),
                       child: const Text('¿Ya tenes una cuenta? Inicia sesión'),
                     ),
                   ),
-
-
-
                 ],
-
-                
-              )
-              
+              ),
             ),
           ),
-        )  
+        ),
       ),
     );
   }
