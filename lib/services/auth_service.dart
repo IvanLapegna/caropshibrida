@@ -8,9 +8,22 @@ class AuthService {
     return _auth.signInWithEmailAndPassword(email: email, password: password);
   }
 
-  Future<UserCredential> register(String email, String password) {
-    return _auth.createUserWithEmailAndPassword(email: email, password: password);
+
+  Future<void> register(String email, String password) async {
+    await _auth.createUserWithEmailAndPassword(email: email, password: password);
+
+    final user = _auth.currentUser;
+    if (user == null) {
+      throw Exception('Usuario no disponible después del registro');
+    }
+
+    try {
+      await user.sendEmailVerification();
+    } catch (e) {
+      throw Exception('correo_verificacion_no_enviado');
+    }
   }
+
 
   Future<void> signOut() => _auth.signOut();
 
