@@ -1,9 +1,10 @@
-import 'package:caropshibrida/screens/vehicule_form.dart';
+import 'package:caropshibrida/screens/vehicle_form.dart';
+import 'package:caropshibrida/services/car_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'src/theme/colors.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'services/auth_service.dart';
 import 'screens/login_screen.dart';
 import 'screens/home_screen.dart';
@@ -11,15 +12,23 @@ import 'screens/home_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        Provider<AuthService>(create: (_) => AuthService()),
+        Provider<CarService>(create: (_) => CarService()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final authService = AuthService();
+    final authService = context.read<AuthService>();
 
     final baseScheme = ColorScheme.fromSeed(
       seedColor: appColorsLight.button!, // <-- USA EL AZUL COMO SEMILLA
@@ -28,9 +37,8 @@ class MyApp extends StatelessWidget {
 
     // 2. AHORA sobrescribe los colores con tus valores EXACTOS
     final darkScheme = baseScheme.copyWith(
-      primary: appColorsLight.button!, // Tu azul exacto para botones
-      background: appColorsLight.primary!, // TU FONDO OSCURO EXACTO
-      surface: appColorsLight.cardBackground!, // Tu fondo de tarjeta exacto
+      primary: appColorsLight.button!, // TU FONDO OSCURO EXACTO
+      surface: appColorsLight.primary!, // Tu fondo de tarjeta exacto
     );
 
     return MaterialApp(
@@ -38,7 +46,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/home': (context) => const HomeScreen(),
         '/login': (context) => const LoginScreen(),
-        "/add-vehicule": (context) => const VehiculeForm(),
+        "/add-vehicle": (context) => const VehicleForm(),
       },
 
       // 3. Aplica el tema con el 'darkScheme' corregido
@@ -48,11 +56,11 @@ class MyApp extends StatelessWidget {
         colorScheme: darkScheme, // <-- Usa el 'darkScheme' final
         // Ahora 'darkScheme.background' es TU color,
         // por lo que esto funcionará perfectamente.
-        scaffoldBackgroundColor: darkScheme.background,
+        scaffoldBackgroundColor: darkScheme.surface,
 
         appBarTheme: AppBarTheme(
           // Asegúrate que el AppBar también use el color de fondo correcto
-          backgroundColor: darkScheme.background,
+          backgroundColor: darkScheme.surface,
           foregroundColor: Colors.white,
           elevation: 0,
           centerTitle: true,

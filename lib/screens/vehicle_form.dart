@@ -1,16 +1,20 @@
 import 'dart:io';
+import 'package:caropshibrida/models/car_model.dart';
+import 'package:caropshibrida/services/car_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:caropshibrida/services/auth_service.dart';
+import 'package:provider/provider.dart';
 
-class VehiculeForm extends StatefulWidget {
-  const VehiculeForm({Key? key}) : super(key: key);
+class VehicleForm extends StatefulWidget {
+  const VehicleForm({super.key});
 
   @override
-  _VehiculeFormState createState() => _VehiculeFormState();
+  _VehicleFormState createState() => _VehicleFormState();
 }
 
-class _VehiculeFormState extends State<VehiculeForm> {
+class _VehicleFormState extends State<VehicleForm> {
   final _formKey = GlobalKey<FormState>();
 
   final _brandController = TextEditingController();
@@ -22,7 +26,19 @@ class _VehiculeFormState extends State<VehiculeForm> {
 
   File? _selectedImage;
 
+  late final AuthService _authService;
+  late final CarService _carService;
+
+  bool _isLoading = false;
+
   final ImagePicker _picker = ImagePicker();
+
+  @override
+  void initState() {
+    super.initState();
+    _authService = context.read<AuthService>();
+    _carService = context.read<CarService>();
+  }
 
   @override
   void dispose() {
@@ -49,14 +65,16 @@ class _VehiculeFormState extends State<VehiculeForm> {
     }
   }
 
-  void _submitForm() {
+  void _submitForm() async {
     if (_formKey.currentState!.validate()) {
-      String brand = _brandController.text;
-      String model = _modelController.text;
-      int anio = int.parse(_anioController.text);
-      String licensePlate = _licensePlateController.text;
-      String engine = _engineController.text;
-      String transmission = _transmissionController.text;
+      final user = _authService.currentUser;
+
+      if (user == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: No has iniciado sesión.')),
+        );
+        return;
+      }
 
       if (_selectedImage != null) {
         print("Path de la imagen: ${_selectedImage!.path}");
@@ -64,9 +82,34 @@ class _VehiculeFormState extends State<VehiculeForm> {
         print("No se seleccionó ninguna imagen.");
       }
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Vehículo guardado con éxito.')));
+      setState(() {
+        _isLoading = true;
+      });
+
+      Car newCar = Car(
+        userId: user.uid,
+        brand: _brandController.text,
+        model: _modelController.text,
+        anio: int.parse(_anioController.text),
+        licensePlate: _licensePlateController.text,
+        engine: _engineController.text,
+        transmission: _transmissionController.text,
+      );
+
+      try {
+        await _carService.addCar(newCar);
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Vehículo guardado con éxito.')));
+      } catch (e) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error al guardar: $e')));
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
 
       _formKey.currentState!.reset();
       _brandController.clear();
@@ -117,7 +160,7 @@ class _VehiculeFormState extends State<VehiculeForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Crear Nuevo Vehículo"),
+        title: Text("Añadir Vehículo"),
         centerTitle: true,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(4.0),
@@ -258,13 +301,13 @@ class _VehiculeFormState extends State<VehiculeForm> {
                   ),
                   SizedBox(height: 32.0),
 
-                  // --- BOTÓN DE ENVIAR ---
-                  ElevatedButton(
-                    onPressed: _submitForm,
-                    child: Text('Guardar Vehículo'),
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 16.0),
-                      textStyle: TextStyle(fontSize: 16),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: _isLoading ? null : _submitForm,
+                      child: _isLoading
+                          ? const CircularProgressIndicator()
+                          : const Text('Añadir vehículo'),
                     ),
                   ),
                 ],
