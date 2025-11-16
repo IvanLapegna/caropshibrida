@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Car {
   String? id;
   final String brand;
@@ -8,6 +10,10 @@ class Car {
   final String transmission;
   final String userId;
   String? imageUrl;
+  bool parked;
+  Timestamp? parkingDate;
+  double? parkedLat;
+  double? parkedLng;
 
   Car({
     this.id,
@@ -19,6 +25,10 @@ class Car {
     required this.transmission,
     required this.userId,
     this.imageUrl,
+    required this.parked,
+    this.parkingDate,
+    this.parkedLat,
+    this.parkedLng,
   });
 
   Map<String, dynamic> toMap() {
@@ -31,6 +41,10 @@ class Car {
       "transmission": transmission,
       "userId": userId,
       "imageUrl": imageUrl,
+      "parked": parked,
+      "parkingDate": parkingDate,
+      "parkedLat": parkedLat,
+      "parkedLng": parkedLng,
     };
   }
 
@@ -45,6 +59,10 @@ class Car {
       transmission: map["transmission"] ?? "",
       userId: map["userId"] ?? "",
       imageUrl: map["imageUrl"] ?? "",
+      parked: map["parked"] ?? false,
+      parkingDate: map["parkingDate"],
+      parkedLat: map["parkedLat"],
+      parkedLng: map["parkedLng"]
     );
   }
 }

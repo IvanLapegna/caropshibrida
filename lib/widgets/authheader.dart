@@ -8,12 +8,12 @@ class AuthHeader extends StatelessWidget {
   final double spaceTop;
 
   const AuthHeader({
-    Key? key,
+    super.key,
     required this.assetPath,
     required this.title,
     this.logoWidth = 140,
     this.spaceTop = 60,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

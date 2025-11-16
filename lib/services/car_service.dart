@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:caropshibrida/models/car_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -56,4 +55,25 @@ class CarService {
       print('Error al eliminar: $e');
     }
   }
+
+
+
+  Future<Car?> getCarById(String carId) async {
+    try {
+      final doc = await _carsCollection.doc(carId).get();
+      if (!doc.exists) return null; // no existe el documento
+      final data = doc.data() as Map<String, dynamic>;
+      return Car.fromMap(data, doc.id);
+    } catch (e) {
+      print('Error al obtener el vehiculo por id: $e');
+      return null;
+    }
+  }
+  Stream<Car?> getCarByIdStream(String carId) {
+  return _carsCollection.doc(carId).snapshots().map((doc) {
+    if (!doc.exists) return null;
+    final data = doc.data() as Map<String, dynamic>;
+    return Car.fromMap(data, doc.id);
+  });
+}
 }

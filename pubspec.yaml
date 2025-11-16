@@ -32,7 +32,8 @@ dependencies:
     sdk: flutter
   image_picker: ^1.0.7
   provider: ^6.1.5
-
+  google_maps_flutter: ^2.14.0
+  geolocator: ^14.0.2
   flutter_svg: ^2.2.2
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -64,6 +65,7 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
+    - assets/
     - assets/images/generic_car_icon.png #
   # To add assets to your application, add an assets section, like this:
   # assets:
