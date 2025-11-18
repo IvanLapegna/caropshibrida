@@ -8,7 +8,9 @@ import 'package:caropshibrida/services/auth_service.dart';
 import 'package:provider/provider.dart';
 
 class VehicleForm extends StatefulWidget {
-  const VehicleForm({super.key});
+  final Car? car;
+
+  const VehicleForm({super.key, this.car});
 
   @override
   _VehicleFormState createState() => _VehicleFormState();
@@ -29,7 +31,10 @@ class _VehicleFormState extends State<VehicleForm> {
   late final AuthService _authService;
   late final CarService _carService;
 
+  Car? _car;
+
   bool _isLoading = false;
+  bool _isEdit = false;
 
   final ImagePicker _picker = ImagePicker();
 
@@ -38,6 +43,13 @@ class _VehicleFormState extends State<VehicleForm> {
     super.initState();
     _authService = context.read<AuthService>();
     _carService = context.read<CarService>();
+    _car = widget.car;
+    if (_car != null) {
+      loadFields(_car!);
+      setState(() {
+        _isEdit = true;
+      });
+    }
   }
 
   @override
@@ -49,6 +61,17 @@ class _VehicleFormState extends State<VehicleForm> {
     _engineController.dispose();
     _transmissionController.dispose();
     super.dispose();
+  }
+
+  void loadFields(Car car) {
+    setState(() {
+      _brandController.text = car.brand;
+      _modelController.text = car.model;
+      _anioController.text = car.anio.toString();
+      _licensePlateController.text = car.licensePlate;
+      _engineController.text = car.engine;
+      _transmissionController.text = car.transmission;
+    });
   }
 
   Future<void> _selectImage(ImageSource source) async {
@@ -82,29 +105,50 @@ class _VehicleFormState extends State<VehicleForm> {
       });
 
       Car newCar = Car(
+        id: _car?.id,
         userId: user.uid,
-        brand: _brandController.text,
-        model: _modelController.text,
+        brand: _brandController.text.toUpperCase(),
+        model: _modelController.text.toUpperCase(),
         anio: int.parse(_anioController.text),
-        licensePlate: _licensePlateController.text,
-        engine: _engineController.text,
-        transmission: _transmissionController.text,
+        licensePlate: _licensePlateController.text.toUpperCase(),
+        engine: _engineController.text.toUpperCase(),
+        transmission: _transmissionController.text.toUpperCase(),
+        lastUpdate: DateTime.now(),
+        imageUrl: _car?.imageUrl,
       );
 
-      try {
-        await _carService.addCar(newCar, _selectedImage);
-        Navigator.of(context).pop();
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Vehículo guardado con éxito.')));
-      } catch (e) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error al guardar: $e')));
-      } finally {
-        setState(() {
-          _isLoading = false;
-        });
+      if (_isEdit) {
+        try {
+          await _carService.updateCar(newCar, _selectedImage);
+          Navigator.of(context).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Vehículo guardado con éxito.')),
+          );
+        } catch (e) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Error al guardar: $e')));
+        } finally {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+      } else {
+        try {
+          await _carService.addCar(newCar, _selectedImage);
+          Navigator.of(context).pop();
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Vehículo creado con éxito.')));
+        } catch (e) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Error al crear: $e')));
+        } finally {
+          setState(() {
+            _isLoading = false;
+          });
+        }
       }
 
       _formKey.currentState!.reset();
@@ -156,7 +200,7 @@ class _VehicleFormState extends State<VehicleForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Añadir Vehículo"),
+        title: Text(_isEdit ? "Editar Vehículo" : "Añadir Vehículo"),
         centerTitle: true,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(4.0),
@@ -271,24 +315,83 @@ class _VehicleFormState extends State<VehicleForm> {
                   ),
                   SizedBox(height: 16.0),
 
-                  Container(
-                    height: 200,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(8.0),
+                  Center(
+                    child: Container(
+                      // 1. EL MARCO EXTERNO (La Tarjeta)
+                      height: 220,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.transparent, // Fondo blanco (el marco)
+                        borderRadius: BorderRadius.circular(
+                          20.0,
+                        ), // Bordes externos redondeados
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(
+                              0.1,
+                            ), // Sombra suave
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      // 2. EL ESPACIO INTERNO (El margen blanco)
+                      // Esto hace que la foto no ocupe la "totalidad", dejando un marco blanco
+                      padding: const EdgeInsets.all(12.0),
+
+                      child: Stack(
+                        children: [
+                          // 3. LA IMAGEN (Contenido)
+                          SizedBox.expand(
+                            // Obliga a ocupar todo el espacio interno disponible
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                12.0,
+                              ), // Redondeo interno de la foto
+                              child:
+                                  _buildImagePreview(), // Llamamos a tu función
+                            ),
+                          ),
+
+                          // 4. EL BOTÓN DE CAMARA (Badge)
+                          Positioned(
+                            bottom: 8,
+                            right: 8,
+                            child: Material(
+                              color: Theme.of(
+                                context,
+                              ).primaryColor, // Color de tu app
+                              shape: const CircleBorder(),
+                              elevation: 4,
+                              child: InkWell(
+                                onTap:
+                                    _showDialogOptions, // Acción al tocar el botoncito
+                                customBorder: const CircleBorder(),
+                                child: const Padding(
+                                  padding: EdgeInsets.all(10.0),
+                                  child: Icon(
+                                    Icons.camera_alt,
+                                    color: Colors.white,
+                                    size: 20,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          // 5. TOUCH INVISIBLE (Para que se pueda tocar toda la foto también)
+                          Positioned.fill(
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: _showDialogOptions,
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    child: Center(
-                      child: _selectedImage == null
-                          ? Text('Ninguna imagen seleccionada.')
-                          : Image.memory(_selectedImage!, fit: BoxFit.cover),
-                    ),
-                  ),
-                  SizedBox(height: 8.0),
-                  OutlinedButton.icon(
-                    icon: Icon(Icons.camera_alt),
-                    label: Text("Seleccionar Imagen"),
-                    onPressed: _showDialogOptions,
                   ),
                   SizedBox(height: 32.0),
 
@@ -298,7 +401,9 @@ class _VehicleFormState extends State<VehicleForm> {
                       onPressed: _isLoading ? null : _submitForm,
                       child: _isLoading
                           ? const CircularProgressIndicator()
-                          : const Text('Añadir vehículo'),
+                          : Text(
+                              _isEdit ? "Guardar cambios" : "Añadir vehículo",
+                            ),
                     ),
                   ),
                 ],
@@ -307,6 +412,46 @@ class _VehicleFormState extends State<VehicleForm> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildImagePreview() {
+    if (_selectedImage != null) {
+      return Image.memory(_selectedImage!, fit: BoxFit.contain);
+    }
+
+    if (_car != null && _car!.imageUrl != null && _car!.imageUrl!.isNotEmpty) {
+      return Image.network(
+        _car!.imageUrl!,
+        fit: BoxFit.contain,
+        width: double.infinity,
+        height: double.infinity,
+
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return const Center(child: CircularProgressIndicator());
+        },
+        errorBuilder: (context, error, stackTrace) {
+          return const Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.broken_image, color: Colors.grey),
+              Text("Error al cargar"),
+            ],
+          );
+        },
+      );
+    }
+    return const Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(Icons.image_not_supported_outlined, size: 40, color: Colors.grey),
+        SizedBox(height: 8),
+        Text(
+          'Ninguna imagen seleccionada.',
+          style: TextStyle(color: Colors.grey),
+        ),
+      ],
     );
   }
 }

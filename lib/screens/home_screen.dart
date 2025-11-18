@@ -75,11 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 10.0),
-                    child: VehicleCard(
-                      car: "${car.brand} ${car.model}",
-                      licensePlate: car.licensePlate,
-                      image: car.imageUrl,
-                    ),
+                    child: VehicleCard(car: car),
                   );
                 },
               ),

@@ -1,3 +1,6 @@
+import 'package:caropshibrida/models/insurance_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Car {
   String? id;
   final String brand;
@@ -6,6 +9,8 @@ class Car {
   final String licensePlate;
   final String engine;
   final String transmission;
+  final DateTime lastUpdate;
+  String? insuranceId;
   final String userId;
   String? imageUrl;
 
@@ -18,7 +23,9 @@ class Car {
     required this.engine,
     required this.transmission,
     required this.userId,
+    required this.lastUpdate,
     this.imageUrl,
+    this.insuranceId,
   });
 
   Map<String, dynamic> toMap() {
@@ -31,6 +38,8 @@ class Car {
       "transmission": transmission,
       "userId": userId,
       "imageUrl": imageUrl,
+      "insuranceId": insuranceId,
+      "lastUpdated": lastUpdate,
     };
   }
 
@@ -45,6 +54,8 @@ class Car {
       transmission: map["transmission"] ?? "",
       userId: map["userId"] ?? "",
       imageUrl: map["imageUrl"] ?? "",
+      insuranceId: map["insuranceId"] ?? "",
+      lastUpdate: (map["lastUpdate"] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
   }
 }

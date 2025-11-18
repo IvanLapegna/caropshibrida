@@ -1,5 +1,10 @@
+import 'package:caropshibrida/models/car_model.dart';
+import 'package:caropshibrida/models/insurance_model.dart';
+import 'package:caropshibrida/screens/insurance_form.dart';
+import 'package:caropshibrida/screens/vehicle_detail.dart';
 import 'package:caropshibrida/screens/vehicle_form.dart';
 import 'package:caropshibrida/services/car_service.dart';
+import 'package:caropshibrida/services/insurance_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'src/theme/colors.dart';
@@ -25,6 +30,7 @@ void main() async {
       providers: [
         Provider<AuthService>(create: (_) => AuthService()),
         Provider<CarService>(create: (_) => CarService()),
+        Provider<InsuranceService>(create: (_) => InsuranceService()),
       ],
       child: const MyApp(),
     ),
@@ -55,6 +61,42 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
         "/add-vehicle": (context) => const VehicleForm(),
+      },
+      onGenerateRoute: (settings) {
+        if (settings.name == "/vehicle") {
+          final String id = settings.arguments as String;
+
+          return MaterialPageRoute(
+            builder: (context) => CarDetailScreen(carId: id),
+          );
+        }
+
+        if (settings.name == "/edit-vehicle") {
+          final Car car = settings.arguments as Car;
+
+          return MaterialPageRoute(builder: (context) => VehicleForm(car: car));
+        }
+
+        if (settings.name == "/add-insurance") {
+          final String carId = settings.arguments as String;
+
+          return MaterialPageRoute(
+            builder: (context) => InsuranceForm(carId: carId),
+          );
+        }
+
+        if (settings.name == "/edit-insurance") {
+          final args = settings.arguments as Map<String, dynamic>;
+
+          final String carId = args["carId"];
+
+          final Insurance insurance = args["insurance"];
+
+          return MaterialPageRoute(
+            builder: (context) =>
+                InsuranceForm(carId: carId, insurance: insurance),
+          );
+        }
       },
 
       theme: ThemeData(
@@ -101,7 +143,7 @@ class MyApp extends StatelessWidget {
 
         extensions: <ThemeExtension<dynamic>>[appColorsLight],
       ),
-      home: StreamBuilder(
+      home: StreamBuilder<User?>(
         stream: authService.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {

@@ -11,7 +11,7 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.green,
     required this.red,
     required this.pendingYellow,
-
+    required this.darkerGray,
   });
 
   final Color? primary;
@@ -22,6 +22,7 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color? green;
   final Color? red;
   final Color? pendingYellow;
+  final Color? darkerGray;
 
   @override
   AppColors copyWith({
@@ -33,18 +34,17 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? green,
     Color? red,
     Color? pendingYellow,
-  }) =>
-      AppColors(
-        primary: primary ?? this.primary,
-        cardBackground: cardBackground ?? this.cardBackground,
-        button: button ?? this.button,
-        grayLight: grayLight ?? this.grayLight,
-        lightBlue: lightBlue ?? this.lightBlue,
-        green: green ?? this.green,
-        red: red ?? this.red,
-        pendingYellow: pendingYellow ?? this.pendingYellow,
-
-      );
+  }) => AppColors(
+    primary: primary ?? this.primary,
+    cardBackground: cardBackground ?? this.cardBackground,
+    button: button ?? this.button,
+    grayLight: grayLight ?? this.grayLight,
+    lightBlue: lightBlue ?? this.lightBlue,
+    green: green ?? this.green,
+    red: red ?? this.red,
+    pendingYellow: pendingYellow ?? this.pendingYellow,
+    darkerGray: darkerGray ?? this.darkerGray,
+  );
 
   @override
   AppColors lerp(AppColors? other, double t) {
@@ -60,6 +60,7 @@ class AppColors extends ThemeExtension<AppColors> {
       green: Color.lerp(green, other.green, t),
       red: Color.lerp(red, other.red, t),
       pendingYellow: Color.lerp(pendingYellow, other.pendingYellow, t),
+      darkerGray: Color.lerp(darkerGray, other.darkerGray, t),
     );
   }
 }
@@ -73,4 +74,5 @@ const AppColors appColorsLight = AppColors(
   green: Color(0xFF006D2C),
   red: Color(0xFFE91E25),
   pendingYellow: Color(0xFFFFC53D),
+  darkerGray: Color(0xFFAAAAAA),
 );

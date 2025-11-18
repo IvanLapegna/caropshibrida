@@ -1,0 +1,543 @@
+import 'package:caropshibrida/models/car_model.dart';
+import 'package:caropshibrida/models/insurance_model.dart';
+import 'package:caropshibrida/services/car_service.dart';
+import 'package:caropshibrida/services/insurance_service.dart';
+import 'package:caropshibrida/src/theme/colors.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+
+// Este es el Widget principal, equivalente a tu Activity/Fragment host
+class CarDetailScreen extends StatefulWidget {
+  final String carId;
+
+  const CarDetailScreen({Key? key, required this.carId}) : super(key: key);
+
+  @override
+  State<CarDetailScreen> createState() => _CarDetailScreenState();
+}
+
+class _CarDetailScreenState extends State<CarDetailScreen> {
+  late Stream<Car> _carStream;
+  late final CarService _carService;
+  late final InsuranceService _insuranceService;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _carService = context.read<CarService>();
+
+    _insuranceService = context.read<InsuranceService>();
+
+    _carStream = _carService.getCarById(widget.carId);
+  }
+
+  bool _hasExpenses = true;
+
+  final BoxDecoration _cardDecoration = BoxDecoration(
+    color: appColorsLight.cardBackground,
+    borderRadius: BorderRadius.circular(8.0),
+  );
+
+  final BoxDecoration _chipDecoration = BoxDecoration(
+    color: appColorsLight.button,
+    borderRadius: BorderRadius.circular(20.0),
+  );
+
+  final TextStyle _cardTitleStyle = TextStyle(
+    color: appColorsLight.darkerGray,
+    fontSize: 16.0,
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<Car>(
+      stream: _carStream,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
+        if (!snapshot.hasData || snapshot.data == null) {
+          return const Center(child: Text('No se encontró el vehículo.'));
+        }
+
+        final Car car = snapshot.data!;
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              "${car.brand} ${car.model}", // Usamos los datos del stream
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            centerTitle: true,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ),
+          body: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 800),
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      _buildCarImage(car.imageUrl),
+
+                      _buildActionButtons(),
+
+                      _buildCarDataCard(car),
+
+                      _buildInsuranceSectionResolve(car),
+
+                      _buildExpensesCard(),
+
+                      const SizedBox(height: 30.0),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildCarImage(String? imageUrl) {
+    return Padding(
+      // Ajusté el padding para que se vea más como una "tarjeta" centrada
+      padding: const EdgeInsets.only(top: 20.0, left: 30.0, right: 30.0),
+      child: Container(
+        // 1. TAMAÑO ESTÁNDAR:
+        // Definimos una altura fija. Todas las fotos ocuparán exactamente este espacio.
+        height: 250.0,
+        width: double.infinity,
+
+        // 2. BORDES REDONDEADOS Y ESTILO:
+        decoration: BoxDecoration(
+          color: appColorsLight
+              .cardBackground, // Color de fondo por si la imagen carga lento
+          borderRadius: BorderRadius.circular(20.0), // El radio de la curva
+          boxShadow: [
+            // Sombra suave para darle profundidad (opcional)
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
+
+        // Esto es CRÍTICO: Recorta la imagen para que respete el borde redondeado
+        clipBehavior: Clip.antiAlias,
+
+        child: (imageUrl != null && imageUrl.isNotEmpty)
+            ? Image.network(
+                imageUrl,
+                // 3. AJUSTE DE IMAGEN:
+                // 'cover': La imagen hace zoom para llenar todo el cuadro. Se ve más estético.
+                // 'contain': Muestra la imagen entera, pero puede dejar bandas vacías a los lados.
+                fit: BoxFit.contain,
+
+                loadingBuilder: (context, child, progress) {
+                  if (progress == null) return child;
+                  return const Center(
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  );
+                },
+                errorBuilder: (context, error, stackTrace) {
+                  return const Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.broken_image, size: 50, color: Colors.grey),
+                        Text(
+                          "No disponible",
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              )
+            : Image.asset(
+                'assets/images/generic_car_icon.png',
+                // Para el icono genérico, a veces 'contain' o 'scaleDown' queda mejor
+                // para que no se vea pixelado si es pequeño.
+                fit: BoxFit.contain,
+              ),
+      ),
+    );
+  }
+
+  /// 2. Construye la fila de botones (Estacionar, Recordatorios)
+  Widget _buildActionButtons() {
+    return Padding(
+      // android:layout_marginHorizontal="30dp" y layout_marginTop="16dp"
+      padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
+      child: Container(
+        // android:background="@drawable/container_border_background"
+        decoration: _cardDecoration,
+        // android:paddingVertical="8dp"
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Row(
+          // android:weightSum="2" se logra con Expanded(flex: 1)
+          children: [
+            _buildTopIconButton(
+              icon: Icons.local_parking, // Mapeo de @drawable/parking_icon
+              label: 'Estacionar', // @string/estacionar
+              onPressed: () {
+                // Lógica para viewParkingButton
+              },
+            ),
+            _buildTopIconButton(
+              icon: Icons.notifications, // Mapeo de @drawable/reminder_icon
+              label: 'Recordatorios', // @string/recordatorios
+              onPressed: () {
+                // Lógica para remindersButton
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 3. Construye la tarjeta de "Datos del Vehículo"
+  Widget _buildCarDataCard(Car car) {
+    return Padding(
+      // android:layout_marginStart="30dp", layout_marginEnd="30dp", layout_marginTop="30dp"
+      padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
+      child: Container(
+        width: double.infinity, // Similar a match_parent
+        padding: const EdgeInsets.all(16.0), // android:padding="16dp"
+        decoration: _cardDecoration,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildSectionHeader(
+              title: 'Datos del vehículo', // @string/datos_del_vehiculo
+              // Botón de editar
+              actions: [
+                IconButton(
+                  icon: Icon(Icons.edit, color: appColorsLight.darkerGray),
+                  tooltip: 'Editar datos del vehículo',
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/edit-vehicle',
+                      arguments: car,
+                    );
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 8.0), // Separador
+            _buildInfoText(
+              'Última actualización: ${DateFormat('dd/MM/yyyy').format(car.lastUpdate)}',
+            ),
+            _buildInfoText('Patente: ${car.licensePlate}'),
+            _buildInfoText('Marca: ${car.brand}'),
+            _buildInfoText('Modelo: ${car.model}'),
+            _buildInfoText('Año: ${car.anio}'),
+            _buildInfoText('Motor: ${car.engine}'),
+            _buildInfoText('Transmisión: ${car.transmission}'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInsuranceSectionResolve(Car car) {
+    return StreamBuilder<Insurance?>(
+      stream: _insuranceService.getInsuranceByCarId(car.id!),
+      builder: (context, insuranceSnapshot) {
+        if (insuranceSnapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: Padding(
+              padding: EdgeInsets.all(20.0),
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+
+        final Insurance? insuranceData = insuranceSnapshot.data;
+
+        return _buildInsuranceCard(car, insuranceData);
+      },
+    );
+  }
+
+  /// 4. Construye la tarjeta de "Seguro"
+  Widget _buildInsuranceCard(Car car, Insurance? insurance) {
+    bool hasInsuranceData = insurance != null;
+
+    return Padding(
+      padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16.0),
+        decoration: _cardDecoration,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildSectionHeader(
+              title: 'Seguro', // @string/seguro
+              actions: [
+                if (hasInsuranceData) ...[
+                  IconButton(
+                    icon: Icon(
+                      Icons.description,
+                      color: appColorsLight.darkerGray,
+                    ),
+                    tooltip: 'Ver tarjeta circulación',
+                    onPressed: () {
+                      // Lógica para showCirculationCardButton
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.edit, color: appColorsLight.darkerGray),
+                    tooltip: 'Editar datos seguro',
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/edit-insurance',
+                        arguments: {"carId": car.id, "insurance": insurance},
+                      );
+                    },
+                  ),
+                ],
+              ],
+            ),
+
+            // --- Contenido Condicional ---
+            // Reemplaza los LinearLayout con visibility="gone"
+            if (hasInsuranceData) ...[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 8.0),
+                  _buildInfoText(
+                    'Última actualización: ${DateFormat('dd/MM/yyyy').format(insurance.lastUpdate)}',
+                  ),
+                  _buildInfoText('Aseguradora: ${insurance.insuranceName}'),
+                  _buildInfoText('N° de póliza: ${insurance.policyNumber}'),
+                  _buildInfoText(
+                    'Fecha de vencimiento: ${DateFormat('dd/MM/yyyy').format(insurance.expirationDate)}',
+                  ),
+                  _buildInfoText('Tipo de cobertura: ${insurance.coverage}'),
+                  _buildInfoText('N° de motor: ${insurance.engineNumber}'),
+                  _buildInfoText('N° de chasis: ${insurance.chassisNumber}'),
+                  _buildInfoText('Titular: ${insurance.policyHolderName}'),
+                ],
+              ),
+            ] else ...[
+              _buildAddDataWidget(
+                message: 'No hay seguro asociado',
+                buttonText: 'Agregar Seguro',
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context,
+                    '/add-insurance',
+                    arguments: car.id,
+                  );
+                },
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// 5. Construye la tarjeta de "Gastos"
+  Widget _buildExpensesCard() {
+    return Padding(
+      // layout_margin...="30dp"
+      padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16.0),
+        decoration: _cardDecoration,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildSectionHeader(
+              title: 'Gastos', // @string/gastos
+              actions: [
+                IconButton(
+                  icon: Icon(
+                    Icons.add_circle_outline,
+                    color: appColorsLight.darkerGray,
+                  ),
+                  tooltip: 'Añadir gasto',
+                  onPressed: () {
+                    // Lógica para addExpensesButton
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.list, color: appColorsLight.darkerGray),
+                  tooltip: 'Ver gastos',
+                  onPressed: () {
+                    // Lógica para showExpensesButton
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 16.0),
+            // --- Contenido Condicional ---
+            Visibility(
+              visible: _hasExpenses,
+              // Reemplaza 'expensesRecyclerView'
+              // Usamos un Column para simular el tools:itemCount="3"
+              // Para una lista real, usarías ListView.builder
+              child: Column(
+                children: [
+                  _buildExpenseItem('Nafta', 'ARS \$15.000', '15/11/2025'),
+                  _buildExpenseItem('Lavado', 'ARS \$5.000', '14/11/2025'),
+                  _buildExpenseItem('Peaje', 'ARS \$1.500', '13/11/2025'),
+                ],
+              ),
+            ),
+            Visibility(
+              visible: !_hasExpenses,
+              // Reemplaza 'noExpensesContainer'
+              child: _buildAddDataWidget(
+                message: 'Ningún gasto asociado',
+                buttonText: 'Agregar Gasto',
+                onPressed: () {
+                  // Lógica para addExpenseButtonDirect
+                  setState(() {
+                    _hasExpenses = true; // Simula agregar uno
+                  });
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // --- WIDGETS DE COMPONENTES REUTILIZABLES ---
+
+  /// Simula el botón con ícono arriba (app:iconGravity="top")
+  Widget _buildTopIconButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onPressed,
+  }) {
+    // Expanded con flex: 1 reemplaza a layout_weight="1"
+    return Expanded(
+      flex: 1,
+      child: TextButton(
+        onPressed: onPressed,
+        style: TextButton.styleFrom(
+          foregroundColor: appColorsLight.darkerGray, // android:textColor
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 32.0, // app:iconSize="32dp"
+              color: appColorsLight.button, // app:iconTint="@color/button"
+            ),
+            Text(label),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Construye un header de sección (Chip + Botones)
+  /// Reemplaza el ConstraintLayout usado en los headers
+  Widget _buildSectionHeader({
+    required String title,
+    required List<Widget> actions,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        // El "Chip" con el título
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+          decoration: _chipDecoration,
+          child: Text(
+            title,
+            style: const TextStyle(color: Colors.white, fontSize: 14.0),
+          ),
+        ),
+        // Fila para los botones de acción
+        Row(children: actions),
+      ],
+    );
+  }
+
+  /// Simula un TextView de info (p.ej. "Marca: Ford")
+  Widget _buildInfoText(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        top: 8.0,
+      ), // android:layout_marginTop="8dp"
+      child: Text(text, style: _cardTitleStyle),
+    );
+  }
+
+  /// Simula un item de la lista de gastos (tools:listitem="@layout/car_expense_item")
+  Widget _buildExpenseItem(String title, String amount, String date) {
+    // Esto es una simulación de un item. Lo ideal es que sea su propio Widget.
+    return ListTile(
+      leading: Icon(Icons.receipt_long, color: appColorsLight.button),
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+      subtitle: Text(date),
+      trailing: Text(
+        amount,
+        style: const TextStyle(
+          color: Colors.green,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );
+  }
+
+  /// Simula los contenedores "addInsuranceContainer" y "noExpensesContainer"
+  Widget _buildAddDataWidget({
+    required String message,
+    required String buttonText,
+    required VoidCallback onPressed,
+  }) {
+    return Container(
+      width: double.infinity,
+      // android:layout_margin...="30dp" y android:padding="32dp"
+      // El padding ya está en el contenedor padre, solo agregamos el vertical
+      padding: const EdgeInsets.symmetric(vertical: 32.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: TextStyle(color: appColorsLight.darkerGray, fontSize: 16.0),
+          ),
+          const SizedBox(height: 16.0),
+          ElevatedButton(
+            onPressed: onPressed,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: appColorsLight.button,
+              foregroundColor: Colors.white,
+            ),
+            child: Text(buttonText),
+          ),
+        ],
+      ),
+    );
+  }
+}

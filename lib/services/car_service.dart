@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:caropshibrida/models/car_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,6 +11,10 @@ class CarService {
 
   Future<void> addCar(Car car, Uint8List? imageFile) async {
     try {
+      DocumentReference docRef = _carsCollection.doc();
+
+      car.id = docRef.id;
+
       if (imageFile != null) {
         String fileName =
             'cars/${car.userId}/${DateTime.now().millisecondsSinceEpoch}.jpg';
@@ -25,7 +28,7 @@ class CarService {
         car.imageUrl = downloadUrl;
       }
 
-      await _carsCollection.add(car.toMap());
+      await docRef.set(car.toMap());
     } catch (e) {
       print("Error al agregar el vehiculo: $e");
     }
@@ -41,8 +44,21 @@ class CarService {
     });
   }
 
-  Future<void> updateCar(Car car) async {
+  Stream<Car> getCarById(String carId) {
+    return _carsCollection.doc(carId).snapshots().map((snapshot) {
+      return Car.fromMap(snapshot.data() as Map<String, dynamic>, snapshot.id);
+    });
+  }
+
+  Future<void> updateCar(Car car, Uint8List? imageFile) async {
     try {
+      if (imageFile != null) {
+        await updateCarImage(
+          car: car,
+          newImageFile: imageFile,
+          oldImageUrl: car.imageUrl,
+        );
+      }
       await _carsCollection.doc(car.id).update(car.toMap());
     } catch (e) {
       print("Error al actualizar el vehiculo: $e");
@@ -54,6 +70,38 @@ class CarService {
       await _carsCollection.doc(carId).delete();
     } catch (e) {
       print('Error al eliminar: $e');
+    }
+  }
+
+  Future<void> updateCarImage({
+    required Car car,
+    required Uint8List newImageFile,
+    String? oldImageUrl,
+  }) async {
+    try {
+      if (oldImageUrl != null &&
+          oldImageUrl.isNotEmpty &&
+          oldImageUrl.contains('firebasestorage')) {
+        try {
+          await _storage.refFromURL(oldImageUrl).delete();
+        } catch (e) {
+          print("Advertencia: No se pudo borrar la imagen anterior: $e");
+        }
+      }
+
+      String filePath =
+          'cars/${car.userId}/${DateTime.now().millisecondsSinceEpoch}.jpg';
+      Reference ref = _storage.ref().child(filePath);
+
+      UploadTask uploadTask = ref.putData(newImageFile);
+      TaskSnapshot snapshot = await uploadTask;
+
+      String newDownloadUrl = await snapshot.ref.getDownloadURL();
+
+      car.imageUrl = newDownloadUrl;
+    } catch (e) {
+      print("Error actualizando foto: $e");
+      throw e;
     }
   }
 }
