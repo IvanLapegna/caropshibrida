@@ -101,7 +101,9 @@ class CarService {
       car.imageUrl = newDownloadUrl;
     } catch (e) {
       print("Error actualizando foto: $e");
-      throw e;
+      rethrow;
     }
   }
+
+
 }
