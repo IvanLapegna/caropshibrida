@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 class CarDetailScreen extends StatefulWidget {
   final String carId;
 
-  const CarDetailScreen({Key? key, required this.carId}) : super(key: key);
+  const CarDetailScreen({super.key, required this.carId});
 
   @override
   State<CarDetailScreen> createState() => _CarDetailScreenState();

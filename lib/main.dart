@@ -17,6 +17,7 @@ import 'services/auth_service.dart';
 import 'screens/login_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/register_screen.dart';
+import 'screens/parking_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -61,6 +62,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
         "/add-vehicle": (context) => const VehicleForm(),
+        "/parking": (context) => const MapSample(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == "/vehicle") {
@@ -97,6 +99,7 @@ class MyApp extends StatelessWidget {
                 InsuranceForm(carId: carId, insurance: insurance),
           );
         }
+        return null;
       },
 
       theme: ThemeData(

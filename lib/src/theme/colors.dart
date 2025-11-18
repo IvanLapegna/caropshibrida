@@ -43,7 +43,7 @@ class AppColors extends ThemeExtension<AppColors> {
     green: green ?? this.green,
     red: red ?? this.red,
     pendingYellow: pendingYellow ?? this.pendingYellow,
-    darkerGray: darkerGray ?? this.darkerGray,
+    darkerGray: darkerGray ?? darkerGray,
   );
 
   @override
