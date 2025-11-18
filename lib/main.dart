@@ -62,7 +62,6 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
         "/add-vehicle": (context) => const VehicleForm(),
-        "/parking": (context) => const MapSample(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == "/vehicle") {
@@ -99,6 +98,15 @@ class MyApp extends StatelessWidget {
                 InsuranceForm(carId: carId, insurance: insurance),
           );
         }
+
+        if (settings.name == "/parking") {
+          final Car car = settings.arguments as Car;
+
+          return MaterialPageRoute(
+            builder: (context) => MapSample(car: car),
+          );
+        }
+
         return null;
       },
 

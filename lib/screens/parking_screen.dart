@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:caropshibrida/models/car_model.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -8,7 +8,9 @@ import 'package:caropshibrida/services/car_service.dart';
 import 'package:provider/provider.dart';
 import '../src/theme/colors.dart';
 class MapSample extends StatefulWidget {
-  const MapSample({super.key});
+  final Car car;
+
+  const MapSample({super.key, required this.car});
 
   @override
   State<MapSample> createState() => MapSampleState();
@@ -30,23 +32,33 @@ class MapSampleState extends State<MapSample> {
   bool _canSave = false;
 
   // El id pedido
-  final String _carIdToFind = 'dBGul4Ud44paVEq9M1VK';
+  late final String _carIdToFind;
 
   @override
   void initState() {
     super.initState();
     _carService = context.read<CarService>();
+    _carIdToFind = widget.car.id ?? '';
     _init();
   }
 
   Future<void> _init() async {
+    if (!mounted) return;
     setState(() {
       _loading = true;
       _error = null;
     });
-
+    
+    if (_carIdToFind.isEmpty) {
+      if (!mounted) return;
+      setState(() {
+        _error = 'No hay id de auto válido. Mostrando ubicación actual.';
+      });
+      await _determinePositionAndMove();
+      return;
+    }
     // intentamos mostrar el auto primero; si devuelve false pedimos la ubicación actual
-    final bool carShown = await _loadCarById(_carIdToFind);
+    final bool carShown = await _loadCarById(widget.car);
 
     if (!carShown) {
       // No mostramos marcador de la ubicación actual: solo centramos la cámara
@@ -233,38 +245,13 @@ class MapSampleState extends State<MapSample> {
     }
   }
 
-  Future<bool> _loadCarById(String carId) async {
+  Future<bool> _loadCarById(Car car) async {
     try {
-      final doc = await FirebaseFirestore.instance.collection('cars').doc(carId).get();
-
-      if (!doc.exists) {
-        setState(() {
-          _error = 'No existe el auto con id $carId';
-        });
-        return false;
-      }
-
-      final data = doc.data();
-      if (data == null) {
-        setState(() {
-          _error = 'Documento vacío para el auto $carId';
-        });
-        return false;
-      }
-
-      final bool parked = data['parked'] == true;
-
+      final bool parked = car.parked == true;
       // Si no está marcado como estacionado -> devolvemos false para que se muestre la ubicación actual
       if (!parked) return false;
-
-      // Si está estacionado, intentamos obtener las coordenadas guardadas
-      double? lat = (data['parkedLat'] as num?)?.toDouble();
-      double? lng = (data['parkedLng'] as num?)?.toDouble();
-      if ((lat == null || lng == null) && data['location'] is GeoPoint) {
-        final gp = data['location'] as GeoPoint;
-        lat = gp.latitude;
-        lng = gp.longitude;
-      }
+      double lat = ((car.parkedLat) as num).toDouble();
+      double lng = ((car.parkedLng) as num).toDouble();
 
       if (lat == null || lng == null) {
         // No hay coords válidas -> devolvemos false para usar la ubicación actual
@@ -274,12 +261,13 @@ class MapSampleState extends State<MapSample> {
       final LatLng carLat = LatLng(lat, lng);
 
       final marker = Marker(
-        markerId: MarkerId('car_$carId'),
+        markerId: MarkerId('car_${car.id ?? 'unknown'}'),
         position: carLat,
-        infoWindow: InfoWindow(title: 'Auto $carId (parked)'),
+        infoWindow: InfoWindow(title: 'Auto ${car.id ?? ''} (parked)'),
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
       );
 
+      if (!mounted) return false;
       setState(() {
         _carMarker = marker;
         _error = null;
@@ -296,6 +284,7 @@ class MapSampleState extends State<MapSample> {
 
       return true; // mostramos el auto y ya movimos la cámara
     } catch (e) {
+      if (!mounted) return false;
       setState(() {
         _error = 'Error buscando el auto: $e';
       });
