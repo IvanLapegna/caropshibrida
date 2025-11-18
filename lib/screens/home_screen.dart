@@ -92,14 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center, // Espaciarlos
           children: [
-              IconButton(
-              icon: const Icon(Icons.map),
-              iconSize: 28.0,
-              tooltip: 'Mapa',
-              onPressed: () {
-                Navigator.pushNamed(context, "/parking");
-              },
-            ),
+
             // Botón de Gastos
             IconButton(
               icon: const Icon(Icons.attach_money),

@@ -6,6 +6,7 @@ import 'package:caropshibrida/src/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/foundation.dart' show Uint8List, kIsWeb;
 
 // Este es el Widget principal, equivalente a tu Activity/Fragment host
 class CarDetailScreen extends StatefulWidget {
@@ -89,8 +90,9 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                     children: [
                       _buildCarImage(car.imageUrl),
 
-                      _buildActionButtons(),
-
+                      if (!kIsWeb)
+                        _buildActionButtons(car),
+                      
                       _buildCarDataCard(car),
 
                       _buildInsuranceSectionResolve(car),
@@ -177,7 +179,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
   }
 
   /// 2. Construye la fila de botones (Estacionar, Recordatorios)
-  Widget _buildActionButtons() {
+  Widget _buildActionButtons(Car car) {
     return Padding(
       // android:layout_marginHorizontal="30dp" y layout_marginTop="16dp"
       padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
@@ -193,8 +195,12 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
               icon: Icons.local_parking, // Mapeo de @drawable/parking_icon
               label: 'Estacionar', // @string/estacionar
               onPressed: () {
-                // Lógica para viewParkingButton
-              },
+                  Navigator.pushNamed(
+                    context,
+                    '/parking',
+                    arguments: car,
+                  );
+                },
             ),
             _buildTopIconButton(
               icon: Icons.notifications, // Mapeo de @drawable/reminder_icon
