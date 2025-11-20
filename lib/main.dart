@@ -4,6 +4,7 @@ import 'package:caropshibrida/screens/insurance_form.dart';
 import 'package:caropshibrida/screens/vehicle_detail.dart';
 import 'package:caropshibrida/screens/vehicle_form.dart';
 import 'package:caropshibrida/services/car_service.dart';
+import 'package:caropshibrida/services/expense_service.dart';
 import 'package:caropshibrida/services/insurance_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -31,6 +32,7 @@ void main() async {
         Provider<AuthService>(create: (_) => AuthService()),
         Provider<CarService>(create: (_) => CarService()),
         Provider<InsuranceService>(create: (_) => InsuranceService()),
+        Provider<ExpenseService>(create: (_) => ExpenseService()),
       ],
       child: const MyApp(),
     ),
