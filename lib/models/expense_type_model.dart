@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 class ExpenseType {
   final String id;
   final String name;

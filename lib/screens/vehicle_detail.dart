@@ -1,17 +1,21 @@
 import 'package:caropshibrida/models/car_model.dart';
+import 'package:caropshibrida/models/expense_model.dart';
 import 'package:caropshibrida/models/insurance_model.dart';
+import 'package:caropshibrida/screens/expense_card.dart';
 import 'package:caropshibrida/services/car_service.dart';
+import 'package:caropshibrida/services/expense_service.dart';
 import 'package:caropshibrida/services/insurance_service.dart';
 import 'package:caropshibrida/src/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 // Este es el Widget principal, equivalente a tu Activity/Fragment host
 class CarDetailScreen extends StatefulWidget {
   final String carId;
 
-  const CarDetailScreen({Key? key, required this.carId}) : super(key: key);
+  const CarDetailScreen({super.key, required this.carId});
 
   @override
   State<CarDetailScreen> createState() => _CarDetailScreenState();
@@ -21,6 +25,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
   late Stream<Car> _carStream;
   late final CarService _carService;
   late final InsuranceService _insuranceService;
+  late final ExpenseService _expenseService;
 
   @override
   void initState() {
@@ -30,10 +35,10 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
 
     _insuranceService = context.read<InsuranceService>();
 
+    _expenseService = context.read<ExpenseService>();
+
     _carStream = _carService.getCarById(widget.carId);
   }
-
-  bool _hasExpenses = true;
 
   final BoxDecoration _cardDecoration = BoxDecoration(
     color: appColorsLight.cardBackground,
@@ -70,10 +75,18 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
         return Scaffold(
           appBar: AppBar(
             title: Text(
-              "${car.brand} ${car.model}", // Usamos los datos del stream
+              "${car.brand} ${car.model}",
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             centerTitle: true,
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(4.0),
+              child: Container(
+                color: Theme.of(context).colorScheme.primary,
+                height: 3.0,
+                width: 120,
+              ),
+            ),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () => Navigator.of(context).pop(),
@@ -89,13 +102,13 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                     children: [
                       _buildCarImage(car.imageUrl),
 
-                      _buildActionButtons(),
+                      if (!kIsWeb) _buildActionButtons(car),
 
                       _buildCarDataCard(car),
 
                       _buildInsuranceSectionResolve(car),
 
-                      _buildExpensesCard(),
+                      _buildExpensesCard(car),
 
                       const SizedBox(height: 30.0),
                     ],
@@ -177,7 +190,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
   }
 
   /// 2. Construye la fila de botones (Estacionar, Recordatorios)
-  Widget _buildActionButtons() {
+  Widget _buildActionButtons(Car car) {
     return Padding(
       // android:layout_marginHorizontal="30dp" y layout_marginTop="16dp"
       padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
@@ -193,7 +206,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
               icon: Icons.local_parking, // Mapeo de @drawable/parking_icon
               label: 'Estacionar', // @string/estacionar
               onPressed: () {
-                // Lógica para viewParkingButton
+                Navigator.pushNamed(context, '/parking', arguments: car);
               },
             ),
             _buildTopIconButton(
@@ -357,7 +370,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
   }
 
   /// 5. Construye la tarjeta de "Gastos"
-  Widget _buildExpensesCard() {
+  Widget _buildExpensesCard(Car car) {
     return Padding(
       // layout_margin...="30dp"
       padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
@@ -369,7 +382,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSectionHeader(
-              title: 'Gastos', // @string/gastos
+              title: 'Gastos Recientes',
               actions: [
                 IconButton(
                   icon: Icon(
@@ -378,46 +391,63 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                   ),
                   tooltip: 'Añadir gasto',
                   onPressed: () {
-                    // Lógica para addExpensesButton
+                    Navigator.pushNamed(
+                      context,
+                      '/add-expense',
+                      arguments: {"carId": car.id, "carName": car.toString()},
+                    );
                   },
                 ),
                 IconButton(
                   icon: Icon(Icons.list, color: appColorsLight.darkerGray),
                   tooltip: 'Ver gastos',
-                  onPressed: () {
-                    // Lógica para showExpensesButton
-                  },
+                  onPressed: () {},
                 ),
               ],
             ),
             const SizedBox(height: 16.0),
-            // --- Contenido Condicional ---
-            Visibility(
-              visible: _hasExpenses,
-              // Reemplaza 'expensesRecyclerView'
-              // Usamos un Column para simular el tools:itemCount="3"
-              // Para una lista real, usarías ListView.builder
-              child: Column(
-                children: [
-                  _buildExpenseItem('Nafta', 'ARS \$15.000', '15/11/2025'),
-                  _buildExpenseItem('Lavado', 'ARS \$5.000', '14/11/2025'),
-                  _buildExpenseItem('Peaje', 'ARS \$1.500', '13/11/2025'),
-                ],
-              ),
-            ),
-            Visibility(
-              visible: !_hasExpenses,
-              // Reemplaza 'noExpensesContainer'
-              child: _buildAddDataWidget(
-                message: 'Ningún gasto asociado',
-                buttonText: 'Agregar Gasto',
-                onPressed: () {
-                  // Lógica para addExpenseButtonDirect
-                  setState(() {
-                    _hasExpenses = true; // Simula agregar uno
-                  });
-                },
-              ),
+
+            StreamBuilder<List<Expense>>(
+              stream: _expenseService.getExpensesForCar(car.id!),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(20.0),
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                }
+
+                if (snapshot.hasError) {
+                  return Center(child: Text("Error: ${snapshot.error}"));
+                }
+
+                final expenses = snapshot.data ?? [];
+
+                if (expenses.isEmpty) {
+                  return _buildAddDataWidget(
+                    message: "Ningún gastos registrado",
+                    buttonText: "Agregar Gasto",
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context,
+                        '/add-expense',
+                        arguments: {"carId": car.id, "carName": car.toString()},
+                      );
+                    },
+                  );
+                }
+
+                return Column(
+                  children: expenses.map((expense) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 12.0),
+                      child: ExpenseCard(expense: expense, showCarName: false),
+                    );
+                  }).toList(),
+                );
+              },
             ),
           ],
         ),
@@ -491,24 +521,6 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
     );
   }
 
-  /// Simula un item de la lista de gastos (tools:listitem="@layout/car_expense_item")
-  Widget _buildExpenseItem(String title, String amount, String date) {
-    // Esto es una simulación de un item. Lo ideal es que sea su propio Widget.
-    return ListTile(
-      leading: Icon(Icons.receipt_long, color: appColorsLight.button),
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-      subtitle: Text(date),
-      trailing: Text(
-        amount,
-        style: const TextStyle(
-          color: Colors.green,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-
-  /// Simula los contenedores "addInsuranceContainer" y "noExpensesContainer"
   Widget _buildAddDataWidget({
     required String message,
     required String buttonText,
@@ -516,8 +528,6 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
   }) {
     return Container(
       width: double.infinity,
-      // android:layout_margin...="30dp" y android:padding="32dp"
-      // El padding ya está en el contenedor padre, solo agregamos el vertical
       padding: const EdgeInsets.symmetric(vertical: 32.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

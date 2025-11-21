@@ -32,6 +32,19 @@ class ExpenseService {
         });
   }
 
+  Stream<List<Expense>> getExpensesForCar(String carId, {int limit = 3}) {
+    return _expensesCollection
+        .where("carId", isEqualTo: carId)
+        .orderBy("date", descending: true)
+        .limit(limit)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs.map((doc) {
+            return Expense.fromMap(doc.data() as Map<String, dynamic>, doc.id);
+          }).toList();
+        });
+  }
+
   Future<void> updateExpense(Expense expense) async {
     try {
       await _expensesCollection.doc(expense.id).update(expense.toMap());

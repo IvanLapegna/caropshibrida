@@ -94,8 +94,9 @@ class _LoginScreenState extends State<LoginScreen> {
       if (mounted) setState(() => _errorMessage = msg);
     } catch (e) {
       // cualquier otro error no-Firebase
-      if (mounted)
+      if (mounted) {
         setState(() => _errorMessage = 'Error inesperado. Intentá nuevamente.');
+      }
     } finally {
       // Siempre quitamos el loader
       if (mounted) setState(() => _loading = false);
@@ -156,10 +157,12 @@ class _LoginScreenState extends State<LoginScreen> {
                               keyboardType: TextInputType.emailAddress,
                               validator: (v) {
                                 final value = (v ?? '').trim();
-                                if (value.isEmpty)
+                                if (value.isEmpty) {
                                   return 'Debe ingresar correo';
-                                if (!_validatorService.isValidEmail(value))
+                                }
+                                if (!_validatorService.isValidEmail(value)) {
                                   return 'Correo inválido';
+                                }
                                 return null;
                               },
                               onChanged: (_) => _resetErrors(),
@@ -173,8 +176,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               obscureText: true,
                               validator: (v) {
                                 final value = v ?? '';
-                                if (value.isEmpty)
+                                if (value.isEmpty) {
                                   return 'Debe ingresar contraseña';
+                                }
                                 return null;
                               },
                               onChanged: (_) => _resetErrors(),

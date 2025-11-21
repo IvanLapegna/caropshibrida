@@ -1,11 +1,8 @@
-import 'dart:io';
-
 import 'package:caropshibrida/models/insurance_model.dart';
 import 'package:caropshibrida/services/auth_service.dart';
 import 'package:caropshibrida/services/insurance_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -34,7 +31,6 @@ class _InsuranceFormState extends State<InsuranceForm> {
   late final InsuranceService _insuranceService;
 
   PlatformFile? _selectedFile;
-  String? _selectedFileName;
 
   DateTime? _selectedDate;
 
@@ -92,7 +88,6 @@ class _InsuranceFormState extends State<InsuranceForm> {
     if (result != null) {
       setState(() {
         _selectedFile = result.files.first;
-        _selectedFileName = _selectedFile!.name;
       });
     }
   }

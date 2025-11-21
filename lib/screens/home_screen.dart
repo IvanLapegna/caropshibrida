@@ -33,6 +33,14 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('Mis Vehículos'),
         automaticallyImplyLeading: false,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(4.0),
+          child: Container(
+            color: Theme.of(context).colorScheme.primary,
+            height: 3.0,
+            width: 120,
+          ),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -98,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
               iconSize: 28.0,
               tooltip: 'Gastos',
               onPressed: () {
-                Navigator.pushNamed(context, "/money");
+                Navigator.pushNamed(context, "/expenses");
               },
             ),
 

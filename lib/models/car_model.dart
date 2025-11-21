@@ -1,4 +1,3 @@
-import 'package:caropshibrida/models/insurance_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Car {
@@ -13,6 +12,10 @@ class Car {
   String? insuranceId;
   final String userId;
   String? imageUrl;
+  bool parked;
+  Timestamp? parkingDate;
+  double? parkedLat;
+  double? parkedLng;
 
   Car({
     this.id,
@@ -26,6 +29,10 @@ class Car {
     required this.lastUpdate,
     this.imageUrl,
     this.insuranceId,
+    required this.parked,
+    this.parkingDate,
+    this.parkedLat,
+    this.parkedLng,
   });
 
   Map<String, dynamic> toMap() {
@@ -40,6 +47,10 @@ class Car {
       "imageUrl": imageUrl,
       "insuranceId": insuranceId,
       "lastUpdated": lastUpdate,
+      "parked": parked,
+      "parkingDate": parkingDate,
+      "parkedLat": parkedLat,
+      "parkedLng": parkedLng,
     };
   }
 
@@ -56,6 +67,15 @@ class Car {
       imageUrl: map["imageUrl"] ?? "",
       insuranceId: map["insuranceId"] ?? "",
       lastUpdate: (map["lastUpdate"] as Timestamp?)?.toDate() ?? DateTime.now(),
+      parked: map["parked"] ?? false,
+      parkingDate: map["parkingDate"],
+      parkedLat: map["parkedLat"],
+      parkedLng: map["parkedLng"],
     );
+  }
+
+  @override
+  String toString() {
+    return "$brand $model";
   }
 }

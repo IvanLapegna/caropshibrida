@@ -104,14 +104,16 @@ class InsuranceService {
       // 3. LÓGICA HÍBRIDA (WEB vs MÓVIL)
       if (kIsWeb) {
         // EN WEB: Usamos los bytes (platformFile.bytes)
-        if (platformFile.bytes == null)
+        if (platformFile.bytes == null) {
           throw Exception("No se pudieron leer los bytes del archivo (Web)");
+        }
         task = ref.putData(platformFile.bytes!, metadata);
       } else {
         // EN MÓVIL: Podemos usar putFile si queremos, o putData también.
         // putFile es más eficiente para archivos grandes en móvil.
-        if (platformFile.path == null)
+        if (platformFile.path == null) {
           throw Exception("Ruta de archivo inválida");
+        }
         task = ref.putFile(File(platformFile.path!), metadata);
       }
 
@@ -122,7 +124,7 @@ class InsuranceService {
       return {'url': downloadUrl, 'name': originalName};
     } catch (e) {
       print("Error subiendo archivo: $e");
-      throw e;
+      rethrow;
     }
   }
 }

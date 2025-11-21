@@ -1,5 +1,8 @@
 import 'package:caropshibrida/models/car_model.dart';
+import 'package:caropshibrida/models/expense_model.dart';
 import 'package:caropshibrida/models/insurance_model.dart';
+import 'package:caropshibrida/screens/expense_form.dart';
+import 'package:caropshibrida/screens/expense_list.dart';
 import 'package:caropshibrida/screens/insurance_form.dart';
 import 'package:caropshibrida/screens/vehicle_detail.dart';
 import 'package:caropshibrida/screens/vehicle_form.dart';
@@ -18,6 +21,7 @@ import 'services/auth_service.dart';
 import 'screens/login_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/register_screen.dart';
+import 'screens/parking_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -63,6 +67,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
         "/add-vehicle": (context) => const VehicleForm(),
+        "/expenses": (context) => const ExpenseList(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == "/vehicle") {
@@ -99,6 +104,36 @@ class MyApp extends StatelessWidget {
                 InsuranceForm(carId: carId, insurance: insurance),
           );
         }
+
+        if (settings.name == "/add-expense") {
+          final args = settings.arguments as Map<String, dynamic>;
+          final String carId = args["carId"];
+          final String carName = args["carName"];
+
+          return MaterialPageRoute(
+            builder: (context) => ExpenseForm(carId: carId, carName: carName),
+          );
+        }
+
+        if (settings.name == "/edit-expense") {
+          final args = settings.arguments as Map<String, dynamic>;
+          final String carId = args["carId"];
+          final String carName = args["carName"];
+          final Expense expense = args["expense"];
+
+          return MaterialPageRoute(
+            builder: (context) =>
+                ExpenseForm(carId: carId, carName: carName, expense: expense),
+          );
+        }
+
+        if (settings.name == "/parking") {
+          final Car car = settings.arguments as Car;
+
+          return MaterialPageRoute(builder: (context) => MapSample(car: car));
+        }
+
+        return null;
       },
 
       theme: ThemeData(

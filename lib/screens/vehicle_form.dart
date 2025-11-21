@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:caropshibrida/models/car_model.dart';
 import 'package:caropshibrida/services/car_service.dart';
 import 'package:flutter/material.dart';
@@ -115,6 +114,7 @@ class _VehicleFormState extends State<VehicleForm> {
         transmission: _transmissionController.text.toUpperCase(),
         lastUpdate: DateTime.now(),
         imageUrl: _car?.imageUrl,
+        parked: false,
       );
 
       if (_isEdit) {
@@ -185,7 +185,7 @@ class _VehicleFormState extends State<VehicleForm> {
                   leading: Icon(Icons.photo_camera),
                   title: Text("Cámara"),
                   onTap: () {
-                    _selectImage(ImageSource.gallery);
+                    _selectImage(ImageSource.camera);
                     Navigator.of(context).pop();
                   },
                 ),

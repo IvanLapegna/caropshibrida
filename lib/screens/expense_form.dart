@@ -1,6 +1,3 @@
-import 'dart:nativewrappers/_internal/vm/lib/math_patch.dart';
-
-import 'package:caropshibrida/models/car_model.dart';
 import 'package:caropshibrida/models/expense_model.dart';
 import 'package:caropshibrida/models/expense_type_model.dart';
 import 'package:caropshibrida/services/auth_service.dart';
@@ -288,7 +285,6 @@ class _ExpenseFormState extends State<ExpenseForm> {
                           decoration: InputDecoration(
                             labelText: "Tipo de Gasto",
                             border: OutlineInputBorder(),
-                            prefix: Icon(Icons.category),
                           ),
 
                           items: _expenseTypeOptions.map((ExpenseType type) {
@@ -310,6 +306,8 @@ class _ExpenseFormState extends State<ExpenseForm> {
                             }
                           },
                         ),
+
+                  SizedBox(height: 16.0),
 
                   SizedBox(
                     width: double.infinity,
