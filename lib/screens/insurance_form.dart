@@ -162,34 +162,19 @@ class _InsuranceFormState extends State<InsuranceForm> {
   Future<void> _pickDate(BuildContext context) async {
     // Define el rango de fechas permitido
     final DateTime now = DateTime.now();
-    final DateTime firstDate = DateTime(2000); // Fecha mínima
-    final DateTime lastDate = DateTime(2100); // Fecha máxima
+    final DateTime firstDate = DateTime(2000);
+    final DateTime lastDate = DateTime(2100);
 
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _selectedDate ?? now, // Si ya hay fecha, arranca ahí
+      initialDate: _selectedDate ?? now,
       firstDate: firstDate,
       lastDate: lastDate,
-      // Opcional: Cambiar el idioma a español si tienes configurada la localización
-      // locale: const Locale('es', 'ES'),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: Colors.blue, // Color del encabezado y selección
-              onPrimary: Colors.white,
-              onSurface: Colors.black,
-            ),
-          ),
-          child: child!,
-        );
-      },
     );
 
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
-        // Actualizamos el texto del input visualmente
         _expirationDateController.text = DateFormat(
           'dd/MM/yyyy',
         ).format(_selectedDate!);

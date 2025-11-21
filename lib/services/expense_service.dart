@@ -21,15 +21,38 @@ class ExpenseService {
     }
   }
 
-  Stream<List<Expense>> getExpenses(String userId) {
-    return _expensesCollection
-        .where("userId", isEqualTo: userId)
-        .snapshots()
-        .map((snapshot) {
-          return snapshot.docs.map((doc) {
-            return Expense.fromMap(doc.data() as Map<String, dynamic>, doc.id);
-          }).toList();
-        });
+  Stream<List<Expense>> getExpenses(
+    String userId,
+    String? carId,
+    String? expenseTypeId,
+    DateTime? startDate,
+    DateTime? endDate,
+  ) {
+    Query query = _expensesCollection.where("userId", isEqualTo: userId);
+
+    if (carId != null) {
+      query = query.where("carId", isEqualTo: carId);
+    }
+
+    if (expenseTypeId != null) {
+      query = query.where("expenseTypeId", isEqualTo: expenseTypeId);
+    }
+
+    if (startDate != null) {
+      query = query.where("date", isGreaterThanOrEqualTo: startDate);
+    }
+
+    if (endDate != null) {
+      query = query.where("date", isLessThanOrEqualTo: endDate);
+    }
+
+    query = query.orderBy('date', descending: true);
+
+    return query.snapshots().map((snapshot) {
+      return snapshot.docs.map((doc) {
+        return Expense.fromMap(doc.data() as Map<String, dynamic>, doc.id);
+      }).toList();
+    });
   }
 
   Stream<List<Expense>> getExpensesForCar(String carId, {int limit = 3}) {

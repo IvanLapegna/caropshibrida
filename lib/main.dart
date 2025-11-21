@@ -67,7 +67,6 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
         "/add-vehicle": (context) => const VehicleForm(),
-        "/expenses": (context) => const ExpenseList(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == "/vehicle") {
@@ -75,6 +74,19 @@ class MyApp extends StatelessWidget {
 
           return MaterialPageRoute(
             builder: (context) => CarDetailScreen(carId: id),
+          );
+        }
+
+        if (settings.name == "/expenses") {
+          final args = settings.arguments as Map<String, dynamic>?;
+          final String? preselectedCarId = args?["preselectedCarId"];
+          final String? preselectedCarName = args?["preselectedCarName"];
+
+          return MaterialPageRoute(
+            builder: (context) => ExpenseList(
+              preselectedCarId: preselectedCarId,
+              preselectedCarName: preselectedCarName,
+            ),
           );
         }
 

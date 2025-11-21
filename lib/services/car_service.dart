@@ -50,6 +50,16 @@ class CarService {
     });
   }
 
+  Future<List<Car>> getCarsFromUser(String userId) async {
+    final snapshot = await _carsCollection
+        .where("userId", isEqualTo: userId)
+        .get();
+
+    return snapshot.docs.map((doc) {
+      return Car.fromMap(doc.data() as Map<String, dynamic>, doc.id);
+    }).toList();
+  }
+
   Future<void> updateCar(Car car, Uint8List? imageFile) async {
     try {
       if (imageFile != null) {
@@ -104,6 +114,4 @@ class CarService {
       rethrow;
     }
   }
-
-
 }

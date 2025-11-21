@@ -13,7 +13,7 @@ class Car {
   final String userId;
   String? imageUrl;
   bool parked;
-  Timestamp? parkingDate;
+  DateTime? parkingDate;
   double? parkedLat;
   double? parkedLng;
 
@@ -68,9 +68,10 @@ class Car {
       insuranceId: map["insuranceId"] ?? "",
       lastUpdate: (map["lastUpdate"] as Timestamp?)?.toDate() ?? DateTime.now(),
       parked: map["parked"] ?? false,
-      parkingDate: map["parkingDate"],
-      parkedLat: map["parkedLat"],
-      parkedLng: map["parkedLng"],
+      parkingDate:
+          (map["parkingDate"] as Timestamp?)?.toDate() ?? DateTime.now(),
+      parkedLat: map["parkedLat"] ?? 0,
+      parkedLng: map["parkedLng"] ?? 0,
     );
   }
 

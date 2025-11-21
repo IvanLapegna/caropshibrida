@@ -1,6 +1,7 @@
 import 'package:caropshibrida/models/expense_model.dart';
 import 'package:caropshibrida/services/expense_service.dart';
 import 'package:caropshibrida/src/theme/colors.dart';
+import 'package:caropshibrida/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -46,20 +47,20 @@ class ExpenseCard extends StatelessWidget {
                         width: 50,
                         height: 50,
                         decoration: BoxDecoration(
-                          color: _getColorForType(
+                          color: getColorForType(
                             expense.expenseTypeId,
                           ).withOpacity(0.2),
                           borderRadius: BorderRadius.circular(12.0),
                           border: Border.all(
-                            color: _getColorForType(
+                            color: getColorForType(
                               expense.expenseTypeId,
                             ).withOpacity(0.5),
                             width: 1,
                           ),
                         ),
                         child: Icon(
-                          _getIconForType(expense.expenseTypeId),
-                          color: _getColorForType(expense.expenseTypeId),
+                          getIconForType(expense.expenseTypeId),
+                          color: getColorForType(expense.expenseTypeId),
                           size: 24,
                         ),
                       ),
@@ -265,39 +266,5 @@ class ExpenseCard extends StatelessWidget {
         );
       },
     );
-  }
-
-  IconData _getIconForType(String typeId) {
-    switch (typeId.toLowerCase()) {
-      case '0':
-        return Icons.local_gas_station;
-      case '1':
-        return Icons.security;
-      case '2':
-        return Icons.car_repair;
-      case '3':
-        return Icons.build;
-      case '4':
-        return Icons.local_car_wash;
-      default:
-        return Icons.category;
-    }
-  }
-
-  Color _getColorForType(String typeId) {
-    switch (typeId.toLowerCase()) {
-      case '0':
-        return Colors.orangeAccent;
-      case '1':
-        return Colors.blueAccent;
-      case '2':
-        return Colors.brown;
-      case '3':
-        return Colors.redAccent;
-      case '4':
-        return Colors.cyanAccent;
-      default:
-        return Colors.grey;
-    }
   }
 }

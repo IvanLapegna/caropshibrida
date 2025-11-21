@@ -6,6 +6,7 @@ import 'package:caropshibrida/services/car_service.dart';
 import 'package:caropshibrida/services/expense_service.dart';
 import 'package:caropshibrida/services/insurance_service.dart';
 import 'package:caropshibrida/src/theme/colors.dart';
+import 'package:caropshibrida/utils/file_opener.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -222,21 +223,18 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
     );
   }
 
-  /// 3. Construye la tarjeta de "Datos del Vehículo"
   Widget _buildCarDataCard(Car car) {
     return Padding(
-      // android:layout_marginStart="30dp", layout_marginEnd="30dp", layout_marginTop="30dp"
       padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
       child: Container(
-        width: double.infinity, // Similar a match_parent
-        padding: const EdgeInsets.all(16.0), // android:padding="16dp"
+        width: double.infinity,
+        padding: const EdgeInsets.all(16.0),
         decoration: _cardDecoration,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSectionHeader(
-              title: 'Datos del vehículo', // @string/datos_del_vehiculo
-              // Botón de editar
+              title: 'DATOS DEL VEHÍCULO',
               actions: [
                 IconButton(
                   icon: Icon(Icons.edit, color: appColorsLight.darkerGray),
@@ -251,7 +249,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 8.0), // Separador
+            const SizedBox(height: 8.0),
             _buildInfoText(
               'Última actualización: ${DateFormat('dd/MM/yyyy').format(car.lastUpdate)}',
             ),
@@ -287,7 +285,6 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
     );
   }
 
-  /// 4. Construye la tarjeta de "Seguro"
   Widget _buildInsuranceCard(Car car, Insurance? insurance) {
     bool hasInsuranceData = insurance != null;
 
@@ -301,7 +298,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSectionHeader(
-              title: 'Seguro', // @string/seguro
+              title: 'SEGURO',
               actions: [
                 if (hasInsuranceData) ...[
                   IconButton(
@@ -311,7 +308,18 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                     ),
                     tooltip: 'Ver tarjeta circulación',
                     onPressed: () {
-                      // Lógica para showCirculationCardButton
+                      if (insurance.policyFileUrl != null) {
+                        FileOpener.openFile(
+                          context,
+                          insurance.policyFileUrl!,
+                          insurance.policyFileName!,
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('No hay un archivo cargado.')),
+                        );
+                        return;
+                      }
                     },
                   ),
                   IconButton(
@@ -329,8 +337,6 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
               ],
             ),
 
-            // --- Contenido Condicional ---
-            // Reemplaza los LinearLayout con visibility="gone"
             if (hasInsuranceData) ...[
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -352,7 +358,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
               ),
             ] else ...[
               _buildAddDataWidget(
-                message: 'No hay seguro asociado',
+                message: 'No hay un seguro asociado.',
                 buttonText: 'Agregar Seguro',
                 onPressed: () {
                   Navigator.pushNamed(
@@ -369,10 +375,8 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
     );
   }
 
-  /// 5. Construye la tarjeta de "Gastos"
   Widget _buildExpensesCard(Car car) {
     return Padding(
-      // layout_margin...="30dp"
       padding: const EdgeInsets.only(left: 30.0, right: 30.0, top: 30.0),
       child: Container(
         width: double.infinity,
@@ -382,7 +386,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSectionHeader(
-              title: 'Gastos Recientes',
+              title: "GASTOS RECIENTES",
               actions: [
                 IconButton(
                   icon: Icon(
@@ -400,8 +404,17 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                 ),
                 IconButton(
                   icon: Icon(Icons.list, color: appColorsLight.darkerGray),
-                  tooltip: 'Ver gastos',
-                  onPressed: () {},
+                  tooltip: 'Ver gastos del vehículo',
+                  onPressed: () {
+                    Navigator.pushNamed(
+                      context,
+                      '/expenses',
+                      arguments: {
+                        "preselectedCarId": car.id,
+                        "preselectedCarName": car.toString(),
+                      },
+                    );
+                  },
                 ),
               ],
             ),
@@ -427,7 +440,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
 
                 if (expenses.isEmpty) {
                   return _buildAddDataWidget(
-                    message: "Ningún gastos registrado",
+                    message: "Ningún gasto registrado",
                     buttonText: "Agregar Gasto",
                     onPressed: () {
                       Navigator.pushNamed(

@@ -2,6 +2,7 @@ import 'package:caropshibrida/models/expense_model.dart';
 import 'package:caropshibrida/models/expense_type_model.dart';
 import 'package:caropshibrida/services/auth_service.dart';
 import 'package:caropshibrida/services/expense_service.dart';
+import 'package:caropshibrida/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -113,18 +114,6 @@ class _ExpenseFormState extends State<ExpenseForm> {
       initialDate: _selectedDate ?? now,
       firstDate: firstDate,
       lastDate: lastDate,
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: Colors.blue,
-              onPrimary: Colors.white,
-              onSurface: Colors.black,
-            ),
-          ),
-          child: child!,
-        );
-      },
     );
 
     if (picked != null && picked != _selectedDate) {
@@ -290,7 +279,15 @@ class _ExpenseFormState extends State<ExpenseForm> {
                           items: _expenseTypeOptions.map((ExpenseType type) {
                             return DropdownMenuItem<String>(
                               value: type.id,
-                              child: Text(type.name),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(getIconForType(type.id), size: 22),
+                                  const SizedBox(width: 12),
+
+                                  Text(type.name),
+                                ],
+                              ),
                             );
                           }).toList(),
 
