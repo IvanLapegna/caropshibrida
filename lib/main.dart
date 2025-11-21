@@ -4,11 +4,13 @@ import 'package:caropshibrida/models/insurance_model.dart';
 import 'package:caropshibrida/screens/expense_form.dart';
 import 'package:caropshibrida/screens/expense_list.dart';
 import 'package:caropshibrida/screens/insurance_form.dart';
+import 'package:caropshibrida/screens/reminderList_screen.dart';
 import 'package:caropshibrida/screens/vehicle_detail.dart';
 import 'package:caropshibrida/screens/vehicle_form.dart';
 import 'package:caropshibrida/services/car_service.dart';
 import 'package:caropshibrida/services/expense_service.dart';
 import 'package:caropshibrida/services/insurance_service.dart';
+import 'package:caropshibrida/services/reminder_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'src/theme/colors.dart';
@@ -37,6 +39,7 @@ void main() async {
         Provider<CarService>(create: (_) => CarService()),
         Provider<InsuranceService>(create: (_) => InsuranceService()),
         Provider<ExpenseService>(create: (_) => ExpenseService()),
+        Provider<ReminderService>(create: (_) => ReminderService()),
       ],
       child: const MyApp(),
     ),
@@ -68,6 +71,7 @@ class MyApp extends StatelessWidget {
         '/register': (context) => const RegisterScreen(),
         "/add-vehicle": (context) => const VehicleForm(),
         "/expenses": (context) => const ExpenseList(),
+
       },
       onGenerateRoute: (settings) {
         if (settings.name == "/vehicle") {
@@ -131,6 +135,12 @@ class MyApp extends StatelessWidget {
           final Car car = settings.arguments as Car;
 
           return MaterialPageRoute(builder: (context) => MapSample(car: car));
+        }
+
+        if (settings.name == "/reminders") {
+          final String? carId = settings.arguments as String?;
+          
+          return MaterialPageRoute(builder: (context) => ReminderList(carId: carId));
         }
 
         return null;

@@ -213,7 +213,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
               icon: Icons.notifications, // Mapeo de @drawable/reminder_icon
               label: 'Recordatorios', // @string/recordatorios
               onPressed: () {
-                // Lógica para remindersButton
+                Navigator.pushNamed(context, '/reminders', arguments: car.id);
               },
             ),
           ],
