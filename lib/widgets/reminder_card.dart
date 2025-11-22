@@ -55,40 +55,50 @@ class ReminderCard extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                             const SizedBox(height: 6.0),
+                            
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Icon(
-                                  Icons.calendar_today,
-                                  size: 12,
-                                  color: Colors.white54,
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.calendar_today,
+                                      size: 27,
+                                      color: Colors.white54,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      DateFormat('dd/MM/yyyy').format(date),
+                                      style: const TextStyle(
+                                        color: Colors.white70,
+                                        fontSize: 28,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  DateFormat('dd/MM/yyyy').format(date),
-                                  style: const TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 13,
-                                  ),
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.access_time,
+                                      size: 27,
+                                      color: Colors.white54,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      DateFormat('HH:mm').format(date),
+                                      style: const TextStyle(
+                                        color: Colors.white70,
+                                        fontSize: 28,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
+
+
+                              ]
                             ),
-                            Row(
-                              children: [
-                                const Icon(
-                                  Icons.access_time,
-                                  size: 12,
-                                  color: Colors.white54,
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  DateFormat('HH:mm').format(date),
-                                  style: const TextStyle(
-                                    color: Colors.white70,
-                                    fontSize: 13,
-                                  ),
-                                ),
-                              ],
-                            ),
+                            
+                            
                           ],
                         ),
                       ),

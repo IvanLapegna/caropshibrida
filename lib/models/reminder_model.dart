@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Reminder {
   String? id;
-  final String carId;
+  final String? carId;
   final bool notificationSent;
   final Timestamp notifyAt;
   final bool pending;

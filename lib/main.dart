@@ -138,9 +138,10 @@ class MyApp extends StatelessWidget {
         }
 
         if (settings.name == "/reminders") {
-          final String? carId = settings.arguments as String?;
-          
-          return MaterialPageRoute(builder: (context) => ReminderList(carId: carId));
+          final args = settings.arguments as Map<String, dynamic>?;
+          final String? carId = args?["carId"] as String?;
+          final String? carName = args?["carName"] as String?;
+          return MaterialPageRoute(builder: (context) => ReminderList(carId: carId, carName: carName));
         }
 
         return null;
