@@ -74,14 +74,12 @@ class _ReminderListState extends State<ReminderList> {
         );
 
         if (open == true) {
-          // puedes reutilizar tu función AndroidIntent (openExactAlarmPermissionSettings),
-          // o llamar al método nativo que abre la pantalla (ver más abajo).
+
           await openExactAlarmPermissionSettingsViaNative();
         }
       }
     } on PlatformException catch (e) {
       debugPrint('Error comprobando permiso exact alarms: $e');
-      // En caso de error no bloqueamos la app; podemos dejar que siga sin abrir nada.
     }
   }
     Future<void> openExactAlarmPermissionSettingsViaNative() async {
@@ -97,9 +95,8 @@ class _ReminderListState extends State<ReminderList> {
       if (!Platform.isAndroid) return;
 
       final info = await PackageInfo.fromPlatform();
-      final packageName = info.packageName; // p.ej. "com.example.caropshibrida"
+      final packageName = info.packageName;
 
-      // Intent recomendado: abrir la pantalla de "exact alarms" para TU app
       final intent = AndroidIntent(
         action: 'android.settings.REQUEST_SCHEDULE_EXACT_ALARM',
         data: 'package:$packageName',
@@ -210,7 +207,7 @@ class _ReminderListState extends State<ReminderList> {
                           final dt = await showDatePicker(
                             context: ctx,
                             initialDate: DateTime.now(),
-                            firstDate: DateTime(2000),
+                            firstDate: DateTime.now(),
                             lastDate: DateTime(2100),
                           );
                           if (dt != null) {
@@ -233,9 +230,25 @@ class _ReminderListState extends State<ReminderList> {
                             context: ctx,
                             initialTime: TimeOfDay.now(),
                           );
-                          if (t != null) {
-                            setModalState(() => pickedTime = t);
+                         if (t != null) {
+                          final now = DateTime.now();
+                          final selected = DateTime(
+                            pickedDate!.year,
+                            pickedDate!.month,
+                            pickedDate!.day,
+                            t.hour,
+                            t.minute,
+                          );
+
+                          if (selected.isBefore(now)) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('La hora debe ser futura')),
+                            );
+                            return; // no guardar la hora
                           }
+
+                          setModalState(() => pickedTime = t);
+                        }
                         },
                         style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 12)),
                       ),

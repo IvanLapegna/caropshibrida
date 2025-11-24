@@ -8,6 +8,8 @@ import 'package:provider/provider.dart';
 import 'package:caropshibrida/services/notification_service.dart';
 import 'package:caropshibrida/services/reminder_service.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart' show Uint8List, kIsWeb;
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -44,13 +46,18 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: ()  {
-              Navigator.pushNamed(context, "/reminders");
+          if (!kIsWeb)
+            IconButton(
+              icon: const Icon(Icons.notifications),
+              onPressed: ()  {
+                Navigator.pushNamed(context, "/reminders");
 
-            },
-          ),
+              },
+            ),
+
+
+          
+
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
