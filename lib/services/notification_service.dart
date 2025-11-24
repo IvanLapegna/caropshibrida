@@ -95,12 +95,6 @@
       var scheduledTz = tz.TZDateTime.from(scheduledDate, tz.local);
       final tzNow = tz.TZDateTime.now(tz.local);
 
-      print('--- scheduleNotification debug ---');
-      print('Requested scheduledDate (local): $scheduledDate');
-      print('scheduledTz (tz.local): $scheduledTz');
-      print('tzNow: $tzNow');
-      print('scheduledTz.isAfter(tzNow) => ${scheduledTz.isAfter(tzNow)}');
-
       // Si la fecha programada está en el pasado: loguear y ajustar (opcional)
       if (!scheduledTz.isAfter(tzNow)) {
         print('WARNING: scheduled time is in the PAST. Android normalmente no disparará esta notificación inmediatamente.');

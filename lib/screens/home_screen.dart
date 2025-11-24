@@ -45,6 +45,13 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           IconButton(
+            icon: const Icon(Icons.notifications),
+            onPressed: ()  {
+              Navigator.pushNamed(context, "/reminders");
+
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
@@ -121,14 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
 
-            IconButton(
-              icon: const Icon(Icons.notification_important),
-              iconSize: 28.0,
-              tooltip: 'Recordatorios',
-              onPressed: () {
-                Navigator.pushNamed(context, "/reminders");
-              },
-            ),
+
             // Botón de Ajustes
             IconButton(
               icon: const Icon(Icons.settings),
