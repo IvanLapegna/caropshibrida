@@ -451,13 +451,13 @@ class _ReminderListState extends State<ReminderList> {
                 itemCount: reminders.length,
                 itemBuilder: (context, index) {
                   final reminder = reminders[index];
-
+                  bool showCarName = carid == null ? true : false;
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 10.0),
                     child:
                       GestureDetector(
                         onTap: () => _showReminderSheet(context, _carId, reminder),
-                        child: ReminderCard(reminder: reminder, showCarName: true),
+                        child: ReminderCard(reminder: reminder, showCarName: showCarName),
                       )
                   );
                 },
