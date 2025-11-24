@@ -4,11 +4,14 @@ import 'package:caropshibrida/models/insurance_model.dart';
 import 'package:caropshibrida/screens/expense_form.dart';
 import 'package:caropshibrida/screens/expense_list.dart';
 import 'package:caropshibrida/screens/insurance_form.dart';
+import 'package:caropshibrida/screens/reminderList_screen.dart';
 import 'package:caropshibrida/screens/vehicle_detail.dart';
 import 'package:caropshibrida/screens/vehicle_form.dart';
 import 'package:caropshibrida/services/car_service.dart';
 import 'package:caropshibrida/services/expense_service.dart';
 import 'package:caropshibrida/services/insurance_service.dart';
+import 'package:caropshibrida/services/reminder_service.dart';
+import 'services/notification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'src/theme/colors.dart';
@@ -22,10 +25,12 @@ import 'screens/login_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/parking_screen.dart';
+import 'dart:async';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await NotificationService().init();
 
   if (kIsWeb) {
     await FirebaseAuth.instance.setPersistence(Persistence.LOCAL);
@@ -37,14 +42,76 @@ void main() async {
         Provider<CarService>(create: (_) => CarService()),
         Provider<InsuranceService>(create: (_) => InsuranceService()),
         Provider<ExpenseService>(create: (_) => ExpenseService()),
+        Provider<ReminderService>(create: (_) => ReminderService()),
       ],
       child: const MyApp(),
     ),
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  StreamSubscription<User?>? _authSub;
+  String? _rescheduledForUserId;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final auth = context.read<AuthService>();
+      final reminderService = context.read<ReminderService>();
+
+      _authSub = auth.authStateChanges().listen((user) async {
+        if (user != null) {
+          if (_rescheduledForUserId != user.uid) {
+            try {
+              await reminderService.reschedulePendingReminders(user.uid);
+              _rescheduledForUserId = user.uid;
+              debugPrint('Reschedule pending reminders for ${user.uid}');
+            } catch (e) {
+              debugPrint('Error rescheduling reminders: $e');
+            }
+          }
+        } else {
+          _rescheduledForUserId = null;
+        }
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _authSub?.cancel();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      final auth = context.read<AuthService>();
+      final reminderService = context.read<ReminderService>();
+      final user = auth.currentUser;
+      if (user != null) {
+        // no bloqueante: re-ejecutar en background
+        reminderService
+            .reschedulePendingReminders(user.uid)
+            .then((_) {
+              _rescheduledForUserId = user.uid;
+              debugPrint('Rescheduled on app resume for ${user.uid}');
+            })
+            .catchError((e) => debugPrint('reschedule on resume failed: $e'));
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -143,6 +210,15 @@ class MyApp extends StatelessWidget {
           final Car car = settings.arguments as Car;
 
           return MaterialPageRoute(builder: (context) => MapSample(car: car));
+        }
+
+        if (settings.name == "/reminders") {
+          final args = settings.arguments as Map<String, dynamic>?;
+          final String? carId = args?["carId"] as String?;
+          final String? carName = args?["carName"] as String?;
+          return MaterialPageRoute(
+            builder: (context) => ReminderList(carId: carId, carName: carName),
+          );
         }
 
         return null;

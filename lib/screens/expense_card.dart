@@ -20,7 +20,7 @@ class ExpenseCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final double topMargin = showCarName ? 12.0 : 0.0;
 
-    final _expenseService = context.read<ExpenseService>();
+    final expenseService = context.read<ExpenseService>();
 
     return Padding(
       padding: EdgeInsets.only(top: topMargin),
@@ -146,7 +146,7 @@ class ExpenseCard extends StatelessWidget {
                       IconButton(
                         icon: const Icon(Icons.delete, size: 20),
                         onPressed: () =>
-                            _handleDelete(context, _expenseService),
+                            _handleDelete(context, expenseService),
                         constraints: const BoxConstraints(),
                         tooltip: 'Eliminar',
                       ),
@@ -195,7 +195,7 @@ class ExpenseCard extends StatelessWidget {
 
   void _handleDelete(
     BuildContext parentContext,
-    ExpenseService _expenseService,
+    ExpenseService expenseService,
   ) {
     showDialog(
       context: parentContext,
@@ -232,7 +232,7 @@ class ExpenseCard extends StatelessWidget {
                       });
 
                       try {
-                        await _expenseService.deleteExpense(expense.id!);
+                        await expenseService.deleteExpense(expense.id!);
 
                         if (dialogContext.mounted) {
                           Navigator.pop(dialogContext);
