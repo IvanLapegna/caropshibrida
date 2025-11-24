@@ -17,8 +17,8 @@ class ReminderService {
       final DateTime dt = (reminder.notifyAt as Timestamp).toDate();
       await NotificationService().scheduleNotification(
         id: notifId,
-        title: reminder.title,
-        body: reminder.carName,
+        title: reminder.carName,
+        body: reminder.title,
         scheduledDate: dt,
         payload: id,
       );

@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:caropshibrida/models/car_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'reminder_service.dart';
 
 class CarService {
   final CollectionReference _carsCollection = FirebaseFirestore.instance
@@ -44,8 +45,12 @@ class CarService {
     });
   }
 
-  Stream<Car> getCarById(String carId) {
+  Stream<Car?> getCarById(String carId) { // Cambia el tipo de retorno a Stream<Car?>
     return _carsCollection.doc(carId).snapshots().map((snapshot) {
+      if (!snapshot.exists || snapshot.data() == null) {
+        return null; // Retorna null si el documento no existe o los datos son null
+      }
+      // Si existe, realiza la conversión normal.
       return Car.fromMap(snapshot.data() as Map<String, dynamic>, snapshot.id);
     });
   }
@@ -75,9 +80,18 @@ class CarService {
     }
   }
 
-  Future<void> deleteCar(String carId) async {
+  Future<void> deleteCar(Car car) async {
     try {
-      await _carsCollection.doc(carId).delete();
+      await _carsCollection.doc(car.id).delete();
+      if (car.imageUrl != null){
+        await deleteCarImage(car.imageUrl!);
+      }
+      if (car.insuranceId != null){
+      await deleteInsurancePolicyCar(car.userId, car.id!);
+      }
+      deleteRemindersCar(car.userId, car.id!);
+
+
     } catch (e) {
       print('Error al eliminar: $e');
     }
@@ -112,6 +126,46 @@ class CarService {
     } catch (e) {
       print("Error actualizando foto: $e");
       rethrow;
+    }
+  }
+
+  Future <void> deleteCarImage(String imageUrl) async {
+    try {
+      if (imageUrl.isNotEmpty && imageUrl.contains('firebasestorage')) {
+        await _storage.refFromURL(imageUrl).delete();
+      }
+    } catch (e) {
+      print("Error al eliminar la imagen del vehiculo: $e");
+    }
+  }
+
+  Future<void> deleteInsurancePolicyCar (String userId, String carId) async {
+    String policyPath = 'policies/$userId/$carId';
+    Reference policyRef = _storage.ref().child(policyPath);
+    try {
+      ListResult items = await policyRef.listAll();
+      for (var item in items.items) {
+        await item.delete();
+      }
+    } catch (e) {
+      print("Error al eliminar la póliza de seguro del vehículo: $e");
+    }
+  }
+
+  Future<void> deleteRemindersCar(String userId, String carId) async {
+    try {
+      final remindersSnapshot = await FirebaseFirestore.instance
+          .collection('reminders')
+          .where('userId', isEqualTo: userId)
+          .where('carId', isEqualTo: carId)
+          .get();
+
+      for (var doc in remindersSnapshot.docs) {
+        ReminderService().deleteReminder(doc.id);
+        print("Recordatorio eliminado: ${doc.id}");
+      }
+    } catch (e) {
+      print("Error al eliminar los recordatorios del vehículo: $e");
     }
   }
 }
