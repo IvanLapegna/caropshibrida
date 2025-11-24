@@ -5,7 +5,9 @@ import 'package:caropshibrida/services/car_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
+import 'package:caropshibrida/services/notification_service.dart';
+import 'package:caropshibrida/services/reminder_service.dart';
+import 'package:flutter/services.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -137,6 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.pushNamed(context, "/settings");
               },
             ),
+
           ],
         ),
       ),
