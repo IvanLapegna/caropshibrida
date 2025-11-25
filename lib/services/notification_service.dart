@@ -1,11 +1,11 @@
 // lib/services/notification_service.dart
-import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest_all.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
 import 'dart:io' show Platform;
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class NotificationService {
   NotificationService._privateConstructor();
@@ -17,6 +17,11 @@ class NotificationService {
       FlutterLocalNotificationsPlugin();
 
   Future<void> init() async {
+    if (kIsWeb) {
+      print('ejecución en web — inicialización de notificaciones omitida.');
+      return;
+    }
+
     const androidInit = AndroidInitializationSettings(
       '@drawable/logonotificacion',
     ); // ajustá si tenés otro icon

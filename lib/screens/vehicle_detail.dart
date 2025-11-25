@@ -23,7 +23,7 @@ class CarDetailScreen extends StatefulWidget {
 }
 
 class _CarDetailScreenState extends State<CarDetailScreen> {
-  late Stream<Car> _carStream;
+  late Stream<Car?> _carStream;
   late final CarService _carService;
   late final InsuranceService _insuranceService;
   late final ExpenseService _expenseService;
@@ -58,7 +58,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<Car>(
+    return StreamBuilder<Car?>(
       stream: _carStream,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -68,7 +68,14 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
           return Center(child: Text('Error: ${snapshot.error}'));
         }
         if (!snapshot.hasData || snapshot.data == null) {
-          return const Center(child: Text('No se encontró el vehículo.'));
+            Future.microtask(() {
+                      Navigator.of(context).pop();
+                    });
+                    
+                    // Muestra una pantalla de carga o un mensaje temporal hasta que se complete la navegación.
+                    return const Scaffold(
+                      body: Center(child: Text('Vehículo eliminado. Volviendo a la lista...')),
+                    );        
         }
 
         final Car car = snapshot.data!;
@@ -112,6 +119,27 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                       _buildExpensesCard(car),
 
                       const SizedBox(height: 30.0),
+                      Padding(
+                        // android:layout_marginHorizontal="30dp"
+                        padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                        child:                   
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red,
+
+                              ),
+                              onPressed: () {
+                                _deleteCar(car);
+                              },
+                              child: Text(
+                                      "Eliminar vehículo",
+                                    ),
+                            ),
+                          ),
+                      ),
+    
                     ],
                   ),
                 ),
@@ -562,5 +590,24 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
         ],
       ),
     );
+  }
+
+  void _deleteCar(Car car) async {
+
+        try {
+          await _carService.deleteCar(car);
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Vehículo creado con éxito.')));
+        } catch (e) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Error al crear: $e')));
+        } 
+        
+
+
+
+
   }
 }
