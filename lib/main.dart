@@ -26,6 +26,8 @@ import 'screens/home_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/parking_screen.dart';
 import 'dart:async';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -268,6 +270,18 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
         extensions: <ThemeExtension<dynamic>>[appColorsLight],
       ),
+      localizationsDelegates: [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        Locale('en'), // English
+        Locale('es'), // Spanish
+        Locale('pt'), // Spanish
+      ],
+
       home: StreamBuilder<User?>(
         stream: authService.authStateChanges(),
         builder: (context, snapshot) {

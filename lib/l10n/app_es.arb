@@ -1,0 +1,411 @@
+{
+
+    "iniciarSesion": "Iniciar sesión",
+    "porFavorVerificaCorreo": "Por favor, verifica tu correo antes de iniciar sesión.",
+    "credencialesInvalidas": "Credenciales inválidas",
+    "usuarioDeshabilitado": "Usuario deshabilitado",
+    "demasiadosIntentos": "Demasiados intentos. Probá más tarde.",
+    "errorRed": "Error de red. Verificá tu conexión.",
+    "errorInesperado": "Error inesperado. Intentá nuevamente.",
+    "debeIngresarCorreo": "Debe ingresar correo",
+    "correoInvalido": "Correo inválido",
+    "debeIngresarContrasena": "Debe ingresar contraseña",
+    "emailLabel": "Email",
+    "contrasenaLabel": "Contraseña",
+    "entrar": "Entrar",
+    "yaTenesCuentaIniciaSesion": "¿Ya tenes una cuenta? Inicia sesión",
+
+
+    "registrarse": "Registrarse",
+    "registroExitosoTitle": "Registro exitoso",
+    "registroExitosoContent": "Te enviamos un correo de verificación. Por favor, revísalo para poder iniciar sesión.",
+    "aceptar": "Aceptar",
+    "emailLabel": "Email",
+    "contrasenaLabel": "Contraseña",
+    "confirmarContrasenaLabel": "Confirmar contraseña",
+    "crearCuenta": "Crear cuenta",
+    "yaTenesCuentaIniciaSesion": "¿Ya tenes una cuenta? Inicia sesión",
+    "yaExisteCuenta": "Ya existe una cuenta con ese correo.",
+    "emailInvalido": "Email inválido.",
+    "contrasenaDebil": "La contraseña es demasiado débil.",
+    "errorInesperado": "Error inesperado",
+    "noSePudoEnviarCorreoVerificacion": "No se pudo enviar el correo de verificación. Inténtalo de nuevo más tarde.",
+    "confirmacionObligatoria": "Confirmación obligatoria",
+    "contrasenasNoCoinciden": "Las contraseñas no coinciden",
+
+
+
+    "editar": "Editar",
+    "eliminar": "Eliminar",
+    "eliminarGastoTitle": "Eliminar Gasto",
+    "confirmDeleteExpense": "¿Seguro que quieres eliminar el gasto '{description}'?",
+    "@confirmDeleteExpense": {
+        "placeholders": {
+        "description": {}
+        }
+    },
+    "cancelar": "Cancelar",
+    "gastoEliminado": "Gasto eliminado",
+    "errorEliminar": "Error: {error}",
+    "@errorEliminar": {
+        "placeholders": {
+        "error": {}
+        }
+    },
+
+
+
+
+    "expense_edit_title": "Editar Gasto",
+    "expense_add_title": "Añadir Gasto",
+    "expense_description_label": "Descripción",
+    "expense_description_hint": "Ej: Combustible",
+    "expense_description_required": "La descripción del gasto es obligatoria",
+    "expense_amount_label": "Monto",
+    "expense_amount_required": "El monto del gasto es obligatorio",
+    "expense_date_label": "Fecha del gasto",
+    "expense_date_required": "La fecha de expiración es obligatoria",
+    "expense_type_label": "Tipo de Gasto",
+    "expense_type_required": "El tipo de gasto es obligatorio",
+    "expense_save_changes": "Guardar cambios",
+    "expense_add": "Añadir gasto",
+    "error_not_logged": "Error: No has iniciado sesión.",
+    "expense_saved_success": "Gasto guardado con éxito.",
+    "error_saving": "Error al guardar: {error}",
+    "@error_saving": {
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "expense_added_success": "Gasto añadido con éxito.",
+    "error_adding": "Error al añadir: {error}",
+    "@error_adding": {
+        "placeholders": {
+        "error": {}
+        }
+    },
+
+
+
+
+
+
+    "expense_list_title": "Mis Gastos",
+    "filter_by_date_title": "Filtrar por Fecha",
+    "date_from_label": "Desde:",
+    "date_to_label": "Hasta:",
+    "select_date": "Seleccionar fecha",
+    "cancel": "Cancelar",
+    "apply": "Aplicar",
+    "filter_by_type_title": "Filtrar por Tipo",
+    "view_all": "Ver todos",
+    "filter_by_vehicle_title": "Filtrar por Vehículo",
+    "no_vehicles_registered": "No tienes vehículos registrados",
+    "fechas_label": "Fechas",
+    "date_start_short": "Inicio",
+    "date_today_label": "Hoy",
+    "date_range_from": "Desde {start}",
+    "@date_range_from": {
+        "placeholders": {
+        "start": {}
+        }
+    },
+    "date_range_to": "Hasta {end}",
+    "@date_range_to": {
+        "placeholders": {
+        "end": {}
+        }
+    },
+    "date_range_between": "{start} - {end}",
+    "@date_range_between": {
+        "placeholders": {
+        "start": {},
+        "end": {}
+        }
+    },
+    "clear_filters_tooltip": "Limpiar filtros",
+    "vehicle_label_single": "Vehículo",
+    "vehicle_placeholder": "Vehículo...",
+    "type_label": "Tipo",
+    "no_expenses_message": "No tienes gastos.\nVe a la sección 'Mis Vehículos' para añadir uno desde el detalle de tu auto.",
+    "no_expenses_filtered": "No se encontraron gastos con estos filtros.",
+    "error_generic": "Error: {error}",
+    "@error_generic": {
+        "placeholders": {
+        "error": {}
+        }
+    },
+
+
+
+
+
+
+    "home_title": "Mis Vehículos",
+    "no_vehicles_home": "No tienes vehículos.\nPresiona (+) para añadir uno.",
+    "loading": "Cargando...",
+    "error_generic": "Error: {error}",
+    "@error_generic": {
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "tooltip_expenses": "Gastos",
+    "tooltip_add_vehicle": "Añadir Vehículo",
+    "tooltip_settings": "Ajustes",
+    "no_vehicles_centered": "No tienes vehículos.\nPresiona (+) para añadir uno.",
+    "logout_confirmation_hint": "Cerrar sesión",
+    "reminders_button_tooltip": "Recordatorios",
+
+
+
+
+
+    "insurance_edit_title": "Editar Seguro",
+    "insurance_add_title": "Añadir Seguro",
+    "insurance_name_label": "Aseguradora",
+    "insurance_name_required": "El nombre de la aseguradora es obligatorio",
+    "policy_number_label": "N° de póliza",
+    "policy_number_required": "El N° de póliza es obligatorio",
+    "expiration_date_label": "Fecha de expiración",
+    "expiration_date_required": "La fecha de expiración es obligatoria",
+    "coverage_label": "Tipo de cobertura",
+    "coverage_required": "El tipo de cobertura es obligatorio",
+    "engine_number_label": "N° de motor",
+    "engine_number_required": "El N° de motor es obligatorio",
+    "chassis_number_label": "N° de chasis",
+    "chassis_number_required": "El N° de chasis es obligatorio",
+    "policy_holder_label": "Titular",
+    "policy_holder_required": "El nombre del titular es obligatorio",
+    "policy_document_title": "Comprobante de Póliza Digital",
+    "pick_file_hint": "Tocar para subir Póliza (PDF o Foto)",
+    "current_file_label": "Archivo actual:",
+    "file_picker_edit_icon_semantic": "Editar archivo",
+    "save_changes": "Guardar cambios",
+    "add_insurance": "Añadir seguro",
+    "error_not_logged": "Error: No has iniciado sesión.",
+    "insurance_saved_success": "Seguro guardado con éxito.",
+    "error_saving": "Error al guardar: {error}",
+    "@error_saving": {
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "insurance_added_success": "Seguro añadido con éxito.",
+    "error_adding": "Error al añadir: {error}",
+    "@error_adding": {
+        "placeholders": {
+        "error": {}
+        }
+    },
+
+
+
+
+
+
+
+    "map_title": "¿Donde Estacione?",
+    "no_car_id": "No hay id de auto válido. Mostrando ubicación actual.",
+    "location_service_disabled": "El servicio de ubicación está desactivado.",
+    "location_permission_denied": "Permiso de ubicación denegado.",
+    "location_permission_denied_forever": "Permiso de ubicación denegado permanentemente. Habilitalo desde ajustes.",
+    "error_getting_location": "Error al obtener ubicación: {error}",
+    "@error_getting_location": {
+        "placeholders": {
+        "error": {}
+        }
+    },
+
+    "info_selected_location": "Ubicación seleccionada",
+    "info_parked_here": "Estacionado aquí",
+    "no_location_to_save": "No hay ubicación para guardar. Presiona Actualizar primero.",
+    "error_saving_firestore": "Error al guardar en Firestore: {error}",
+    "@error_saving_firestore": {
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "error_searching_car": "Error buscando el auto: {error}",
+    "@error_searching_car": {
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "marker_title_auto_parked": "Auto {id} (parked)",
+    "@marker_title_auto_parked": {
+        "placeholders": {
+        "id": {}
+        }
+    },
+
+    "actualizar_button": "Actualizar",
+    "guardar_button": "Guardar",
+    "mostrar_ubicacion_tooltip": "Mostrar ubicación",
+    "loading": "Cargando...",
+
+
+
+
+
+
+
+    "exact_alarms_permission_title": "Permiso para alarmas exactas",
+    "exact_alarms_permission_content": "Para que los recordatorios se desencadenen a la hora exacta necesitamos que actives \"Programar alarmas exactas\" en la configuración del teléfono. ¿Querés abrir la configuración ahora?",
+    "no_button": "No",
+    "open_button": "Abrir",
+    "reminder_new_title": "Nuevo recordatorio",
+    "reminder_edit_title": "Editar recordatorio",
+    "reminder_field_title_label": "Título",
+    "choose_date": "Elegir fecha",
+    "choose_time": "Elegir hora",
+    "time_must_be_future": "La hora debe ser futura",
+    "reminder_done_delete": "Realizado / Eliminar",
+    "reminder_update": "Actualizar",
+    "reminder_save": "Guardar",
+    "reminder_deleted_success": "Recordatorio eliminado",
+    "reminder_updated_success": "Recordatorio actualizado",
+    "reminder_created_success": "Recordatorio creado",
+    "generic_error": "Error: {error}",
+    "@generic_error": {
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "appbar_reminders_title": "Mis Recordatorios",
+    "no_reminders_message": "No tienes recordatorios.\nVe a la sección 'Mis Vehículos' para añadir uno desde el detalle de tu auto.",
+    "vehicle_not_found": "Vehículo no encontrado",
+
+
+
+
+
+
+
+    "vehicle_deleted_message": "Vehículo eliminado. Volviendo a la lista...",
+    "error_snapshot": "Error: {error}",
+    "@error_snapshot": {
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "not_available": "No disponible",
+    "delete_vehicle_button": "Eliminar vehículo",
+    "park_label": "Estacionar",
+    "reminders_label": "Recordatorios",
+    "section_vehicle_data": "DATOS DEL VEHÍCULO",
+    "edit_vehicle_tooltip": "Editar datos del vehículo",
+    "last_update_label": "Última actualización: {date}",
+    "@last_update_label": {
+        "placeholders": {
+        "date": {}
+        }
+    },
+    "license_plate_label": "Patente: {license}",
+    "@license_plate_label": {
+        "placeholders": {
+        "license": {}
+        }
+    },
+    "brand_label": "Marca: {brand}",
+    "@brand_label": {
+        "placeholders": {
+        "brand": {}
+        }
+    },
+    "model_label": "Modelo: {model}",
+    "@model_label": {
+        "placeholders": {
+        "model": {}
+        }
+    },
+    "year_label": "Año: {year}",
+    "@year_label": {
+        "placeholders": {
+        "year": {}
+        }
+    },
+    "engine_label": "Motor: {engine}",
+    "@engine_label": {
+        "placeholders": {
+        "engine": {}
+        }
+    },
+    "transmission_label": "Transmisión: {transmission}",
+    "@transmission_label": {
+        "placeholders": {
+        "transmission": {}
+        }
+    },
+    "insurance_section_title": "SEGURO",
+    "view_policy_tooltip": "Ver tarjeta circulación",
+    "no_file_uploaded": "No hay un archivo cargado.",
+    "edit_insurance_tooltip": "Editar datos seguro",
+    "add_insurance_message": "No hay un seguro asociado.",
+    "add_insurance_button": "Agregar Seguro",
+    "expenses_section_title": "GASTOS RECIENTES",
+    "add_expense_tooltip": "Añadir gasto",
+    "view_expenses_tooltip": "Ver gastos del vehículo",
+    "no_expenses_registered": "Ningún gasto registrado",
+    "add_expense_button": "Agregar Gasto",
+    "generic_delete_success": "Vehículo creado con éxito.",
+    "generic_delete_error": "Error al crear: {error}",
+    "@generic_delete_error": {
+        "placeholders": {
+        "error": {}
+        }
+    },
+
+
+
+
+
+
+
+
+    "vehicle_edit_title": "Editar Vehículo",
+    "vehicle_add_title": "Añadir Vehículo",
+    "brand_label": "Marca",
+    "model_label": "Modelo",
+    "year_label": "Año",
+    "license_plate_label": "Patente",
+    "engine_label": "Motor",
+    "transmission_label": "Transmisión",
+    "brand_required": "Por favor, ingresa la marca",
+    "model_required": "Por favor, ingresa el modelo",
+    "year_required": "Por favor, ingresa el año",
+    "year_invalid": "Ingresa un año válido",
+    "license_plate_required": "Por favor, ingresa la patente",
+    "engine_required": "Por favor, ingresa el motor",
+    "transmission_required": "Por favor, ingresa la transmisión",
+    "gallery_option": "Galería / Explorador de archivos",
+    "camera_option": "Cámara",
+    "no_image_selected": "Ninguna imagen seleccionada.",
+    "image_load_error": "Error al cargar",
+    "image_picker_gallery_title": "Galería / Explorador de archivos",
+    "image_picker_camera_title": "Cámara",
+    "camera_button_tooltip": "Abrir selector de imagen",
+    "save_changes_button": "Guardar cambios",
+    "add_vehicle_button": "Añadir vehículo",
+    "error_not_logged": "Error: No has iniciado sesión.",
+    "vehicle_saved_success": "Vehículo guardado con éxito.",
+    "error_saving": "Error al guardar: {error}",
+    "@error_saving": {
+        "placeholders": {
+        "error": {}
+        }
+    },
+    "vehicle_created_success": "Vehículo creado con éxito.",
+    "error_creating": "Error al crear: {error}",
+    "@error_creating": {
+        "placeholders": {
+        "error": {}
+        }
+    }
+
+
+
+
+
+
+}

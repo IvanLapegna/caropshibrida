@@ -3,6 +3,7 @@ import '../services/auth_service.dart';
 import '../services/validator_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../widgets/authheader.dart';
+import 'package:caropshibrida/l10n/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -121,9 +122,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const AuthHeader(
+                            AuthHeader(
                               assetPath: 'assets/mainlogo.svg',
-                              title: 'Iniciar Sesión',
+                              title: AppLocalizations.of(context)!.iniciarSesion,
                               logoWidth: 160,
                               spaceTop: 40,
                             ),

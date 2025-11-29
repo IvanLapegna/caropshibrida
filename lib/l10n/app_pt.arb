@@ -1,0 +1,341 @@
+{
+  "iniciarSesion": "Entrar",
+  "porFavorVerificaCorreo": "Por favor, verifique seu e-mail antes de entrar.",
+  "credencialesInvalidas": "Credenciais inválidas",
+  "usuarioDeshabilitado": "Usuário desativado",
+  "demasiadosIntentos": "Muitas tentativas. Tente novamente mais tarde.",
+  "errorRed": "Erro de rede. Verifique sua conexão.",
+  "errorInesperado": "Erro inesperado. Tente novamente.",
+  "debeIngresarCorreo": "É necessário inserir o e-mail",
+  "correoInvalido": "E-mail inválido",
+  "debeIngresarContrasena": "É necessário inserir a senha",
+  "emailLabel": "E-mail",
+  "contrasenaLabel": "Senha",
+  "entrar": "Entrar",
+  "yaTenesCuentaIniciaSesion": "Já tem uma conta? Entre",
+
+  "registrarse": "Registrar-se",
+  "registroExitosoTitle": "Registro bem-sucedido",
+  "registroExitosoContent": "Enviamos um e-mail de verificação. Por favor, verifique para poder entrar.",
+  "aceptar": "Aceitar",
+  "confirmarContrasenaLabel": "Confirmar senha",
+  "crearCuenta": "Criar conta",
+  "yaExisteCuenta": "Já existe uma conta com esse e-mail.",
+  "emailInvalido": "E-mail inválido.",
+  "contrasenaDebil": "A senha é muito fraca.",
+  "noSePudoEnviarCorreoVerificacion": "Não foi possível enviar o e-mail de verificação. Tente novamente mais tarde.",
+  "confirmacionObligatoria": "Confirmação obrigatória",
+  "contrasenasNoCoinciden": "As senhas não coincidem",
+
+  "editar": "Editar",
+  "eliminar": "Excluir",
+  "eliminarGastoTitle": "Excluir Despesa",
+  "confirmDeleteExpense": "Tem certeza que deseja excluir a despesa '{description}'?",
+  "@confirmDeleteExpense": {
+    "placeholders": {
+      "description": {}
+    }
+  },
+  "cancelar": "Cancelar",
+  "gastoEliminado": "Despesa excluída",
+  "errorEliminar": "Erro: {error}",
+  "@errorEliminar": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+
+  "expense_edit_title": "Editar Despesa",
+  "expense_add_title": "Adicionar Despesa",
+  "expense_description_label": "Descrição",
+  "expense_description_hint": "Ex.: Combustível",
+  "expense_description_required": "A descrição da despesa é obrigatória",
+  "expense_amount_label": "Valor",
+  "expense_amount_required": "O valor da despesa é obrigatório",
+  "expense_date_label": "Data da despesa",
+  "expense_date_required": "A data é obrigatória",
+  "expense_type_label": "Tipo de despesa",
+  "expense_type_required": "O tipo de despesa é obrigatório",
+  "expense_save_changes": "Salvar alterações",
+  "expense_add": "Adicionar despesa",
+  "error_not_logged": "Erro: Você não está autenticado.",
+  "expense_saved_success": "Despesa salva com sucesso.",
+  "error_saving": "Erro ao salvar: {error}",
+  "@error_saving": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "expense_added_success": "Despesa adicionada com sucesso.",
+  "error_adding": "Erro ao adicionar: {error}",
+  "@error_adding": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+
+  "expense_list_title": "Minhas Despesas",
+  "filter_by_date_title": "Filtrar por Data",
+  "date_from_label": "De:",
+  "date_to_label": "Até:",
+  "select_date": "Selecionar data",
+  "cancel": "Cancelar",
+  "apply": "Aplicar",
+  "filter_by_type_title": "Filtrar por Tipo",
+  "view_all": "Ver todos",
+  "filter_by_vehicle_title": "Filtrar por Veículo",
+  "no_vehicles_registered": "Você não tem veículos cadastrados",
+  "fechas_label": "Datas",
+  "date_start_short": "Início",
+  "date_today_label": "Hoje",
+  "date_range_from": "De {start}",
+  "@date_range_from": {
+    "placeholders": {
+      "start": {}
+    }
+  },
+  "date_range_to": "Até {end}",
+  "@date_range_to": {
+    "placeholders": {
+      "end": {}
+    }
+  },
+  "date_range_between": "{start} - {end}",
+  "@date_range_between": {
+    "placeholders": {
+      "start": {},
+      "end": {}
+    }
+  },
+  "clear_filters_tooltip": "Limpar filtros",
+  "vehicle_label_single": "Veículo",
+  "vehicle_placeholder": "Veículo...",
+  "type_label": "Tipo",
+  "no_expenses_message": "Você não tem despesas.\nVá para 'Meus Veículos' para adicionar uma a partir do detalhe do carro.",
+  "no_expenses_filtered": "Nenhuma despesa encontrada com esses filtros.",
+  "error_generic": "Erro: {error}",
+  "@error_generic": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+
+  "home_title": "Meus Veículos",
+  "no_vehicles_home": "Você não tem veículos.\nToque em (+) para adicionar um.",
+  "loading": "Carregando...",
+  "tooltip_expenses": "Despesas",
+  "tooltip_add_vehicle": "Adicionar veículo",
+  "tooltip_settings": "Configurações",
+  "no_vehicles_centered": "Você não tem veículos.\nToque em (+) para adicionar um.",
+  "logout_confirmation_hint": "Sair",
+  "reminders_button_tooltip": "Lembretes",
+
+  "insurance_edit_title": "Editar Seguro",
+  "insurance_add_title": "Adicionar Seguro",
+  "insurance_name_label": "Seguradora",
+  "insurance_name_required": "O nome da seguradora é obrigatório",
+  "policy_number_label": "Nº da apólice",
+  "policy_number_required": "O número da apólice é obrigatório",
+  "expiration_date_label": "Data de expiração",
+  "expiration_date_required": "A data de expiração é obrigatória",
+  "coverage_label": "Tipo de cobertura",
+  "coverage_required": "O tipo de cobertura é obrigatório",
+  "engine_number_label": "Nº do motor",
+  "engine_number_required": "O número do motor é obrigatório",
+  "chassis_number_label": "Nº do chassi",
+  "chassis_number_required": "O número do chassi é obrigatório",
+  "policy_holder_label": "Titular",
+  "policy_holder_required": "O nome do titular é obrigatório",
+  "policy_document_title": "Comprovante de Apólice Digital",
+  "pick_file_hint": "Toque para enviar a apólice (PDF ou foto)",
+  "current_file_label": "Arquivo atual:",
+  "file_picker_edit_icon_semantic": "Editar arquivo",
+  "save_changes": "Salvar alterações",
+  "add_insurance": "Adicionar seguro",
+  "insurance_saved_success": "Seguro salvo com sucesso.",
+  "insurance_added_success": "Seguro adicionado com sucesso.",
+  "error_adding": "Erro ao adicionar: {error}",
+  "@error_adding": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+
+  "map_title": "Onde estacionei?",
+  "no_car_id": "ID do carro inválido. Mostrando localização atual.",
+  "location_service_disabled": "Serviço de localização desativado.",
+  "location_permission_denied": "Permissão de localização negada.",
+  "location_permission_denied_forever": "Permissão de localização negada permanentemente. Habilite nas configurações.",
+  "error_getting_location": "Erro ao obter localização: {error}",
+  "@error_getting_location": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+
+  "info_selected_location": "Local selecionado",
+  "info_parked_here": "Estacionado aqui",
+  "no_location_to_save": "Não há localização para salvar. Pressione Atualizar primeiro.",
+  "error_saving_firestore": "Erro ao salvar no Firestore: {error}",
+  "@error_saving_firestore": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "error_searching_car": "Erro ao buscar o carro: {error}",
+  "@error_searching_car": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "marker_title_auto_parked": "Carro {id} (estacionado)",
+  "@marker_title_auto_parked": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+
+  "actualizar_button": "Atualizar",
+  "guardar_button": "Salvar",
+  "mostrar_ubicacion_tooltip": "Mostrar localização",
+
+  "exact_alarms_permission_title": "Permissão para alarmes exatos",
+  "exact_alarms_permission_content": "Para que os lembretes sejam disparados no horário exato, precisamos que você ative \"Programar alarmes exatos\" nas configurações do telefone. Deseja abrir as configurações agora?",
+  "no_button": "Não",
+  "open_button": "Abrir",
+  "reminder_new_title": "Novo lembrete",
+  "reminder_edit_title": "Editar lembrete",
+  "reminder_field_title_label": "Título",
+  "choose_date": "Escolher data",
+  "choose_time": "Escolher hora",
+  "time_must_be_future": "A hora deve ser futura",
+  "reminder_done_delete": "Concluído / Excluir",
+  "reminder_update": "Atualizar",
+  "reminder_save": "Salvar",
+  "reminder_deleted_success": "Lembrete excluído",
+  "reminder_updated_success": "Lembrete atualizado",
+  "reminder_created_success": "Lembrete criado",
+  "generic_error": "Erro: {error}",
+  "@generic_error": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "appbar_reminders_title": "Meus Lembretes",
+  "no_reminders_message": "Você não tem lembretes.\nVá para 'Meus Veículos' para adicionar um a partir do detalhe do carro.",
+  "vehicle_not_found": "Veículo não encontrado",
+
+  "vehicle_deleted_message": "Veículo excluído. Retornando para a lista...",
+  "error_snapshot": "Erro: {error}",
+  "@error_snapshot": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "not_available": "Não disponível",
+  "delete_vehicle_button": "Excluir veículo",
+  "park_label": "Estacionar",
+  "reminders_label": "Lembretes",
+  "section_vehicle_data": "DADOS DO VEÍCULO",
+  "edit_vehicle_tooltip": "Editar dados do veículo",
+  "last_update_label": "Última atualização: {date}",
+  "@last_update_label": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "license_plate_label": "Placa: {license}",
+  "@license_plate_label": {
+    "placeholders": {
+      "license": {}
+    }
+  },
+  "brand_label": "Marca: {brand}",
+  "@brand_label": {
+    "placeholders": {
+      "brand": {}
+    }
+  },
+  "model_label": "Modelo: {model}",
+  "@model_label": {
+    "placeholders": {
+      "model": {}
+    }
+  },
+  "year_label": "Ano: {year}",
+  "@year_label": {
+    "placeholders": {
+      "year": {}
+    }
+  },
+  "engine_label": "Motor: {engine}",
+  "@engine_label": {
+    "placeholders": {
+      "engine": {}
+    }
+  },
+  "transmission_label": "Transmissão: {transmission}",
+  "@transmission_label": {
+    "placeholders": {
+      "transmission": {}
+    }
+  },
+  "insurance_section_title": "SEGURO",
+  "view_policy_tooltip": "Ver documento da apólice",
+  "no_file_uploaded": "Nenhum arquivo enviado.",
+  "edit_insurance_tooltip": "Editar dados do seguro",
+  "add_insurance_message": "Nenhum seguro associado.",
+  "add_insurance_button": "Adicionar seguro",
+  "expenses_section_title": "DESPESAS RECENTES",
+  "add_expense_tooltip": "Adicionar despesa",
+  "view_expenses_tooltip": "Ver despesas do veículo",
+  "no_expenses_registered": "Nenhuma despesa registrada",
+  "add_expense_button": "Adicionar Despesa",
+  "generic_delete_success": "Veículo criado com sucesso.",
+  "generic_delete_error": "Erro ao criar: {error}",
+  "@generic_delete_error": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+
+  "vehicle_edit_title": "Editar Veículo",
+  "vehicle_add_title": "Adicionar Veículo",
+  "brand_label": "Marca",
+  "model_label": "Modelo",
+  "year_label": "Ano",
+  "license_plate_label": "Placa",
+  "engine_label": "Motor",
+  "transmission_label": "Transmissão",
+  "brand_required": "Por favor, insira a marca",
+  "model_required": "Por favor, insira o modelo",
+  "year_required": "Por favor, insira o ano",
+  "year_invalid": "Insira um ano válido",
+  "license_plate_required": "Por favor, insira a placa",
+  "engine_required": "Por favor, insira o motor",
+  "transmission_required": "Por favor, insira a transmissão",
+  "gallery_option": "Galeria / Explorador de arquivos",
+  "camera_option": "Câmera",
+  "no_image_selected": "Nenhuma imagem selecionada.",
+  "image_load_error": "Erro ao carregar",
+  "image_picker_gallery_title": "Galeria / Explorador de arquivos",
+  "image_picker_camera_title": "Câmera",
+  "camera_button_tooltip": "Abrir seletor de imagem",
+  "save_changes_button": "Salvar alterações",
+  "add_vehicle_button": "Adicionar veículo",
+  "error_not_logged": "Erro: Você não está autenticado.",
+  "vehicle_saved_success": "Veículo salvo com sucesso.",
+  "error_saving": "Erro ao salvar: {error}",
+  "@error_saving": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "vehicle_created_success": "Veículo criado com sucesso.",
+  "error_creating": "Erro ao criar: {error}",
+  "@error_creating": {
+    "placeholders": {
+      "error": {}
+    }
+  }
+}

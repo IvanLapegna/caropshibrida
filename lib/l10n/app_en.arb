@@ -1,0 +1,340 @@
+{
+  "iniciarSesion": "Sign in",
+  "porFavorVerificaCorreo": "Please verify your email before signing in.",
+  "credencialesInvalidas": "Invalid credentials",
+  "usuarioDeshabilitado": "User disabled",
+  "demasiadosIntentos": "Too many attempts. Try again later.",
+  "errorRed": "Network error. Check your connection.",
+  "errorInesperado": "Unexpected error. Please try again.",
+  "debeIngresarCorreo": "Email is required",
+  "correoInvalido": "Invalid email",
+  "debeIngresarContrasena": "Password is required",
+  "emailLabel": "Email",
+  "contrasenaLabel": "Password",
+  "entrar": "Sign in",
+  "yaTenesCuentaIniciaSesion": "Already have an account? Sign in",
+
+  "registrarse": "Register",
+  "registroExitosoTitle": "Registration successful",
+  "registroExitosoContent": "We've sent a verification email. Please check it to be able to sign in.",
+  "aceptar": "Accept",
+  "confirmarContrasenaLabel": "Confirm password",
+  "crearCuenta": "Create account",
+  "yaExisteCuenta": "An account with that email already exists.",
+  "emailInvalido": "Invalid email.",
+  "contrasenaDebil": "The password is too weak.",
+  "noSePudoEnviarCorreoVerificacion": "Could not send verification email. Try again later.",
+  "confirmacionObligatoria": "Confirmation required",
+  "contrasenasNoCoinciden": "Passwords do not match",
+
+  "editar": "Edit",
+  "eliminar": "Delete",
+  "eliminarGastoTitle": "Delete Expense",
+  "confirmDeleteExpense": "Are you sure you want to delete the expense '{description}'?",
+  "@confirmDeleteExpense": {
+    "placeholders": {
+      "description": {}
+    }
+  },
+  "cancelar": "Cancel",
+  "gastoEliminado": "Expense deleted",
+  "errorEliminar": "Error: {error}",
+  "@errorEliminar": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+
+  "expense_edit_title": "Edit Expense",
+  "expense_add_title": "Add Expense",
+  "expense_description_label": "Description",
+  "expense_description_hint": "E.g.: Fuel",
+  "expense_description_required": "Expense description is required",
+  "expense_amount_label": "Amount",
+  "expense_amount_required": "Expense amount is required",
+  "expense_date_label": "Expense date",
+  "expense_date_required": "The date is required",
+  "expense_type_label": "Expense type",
+  "expense_type_required": "Expense type is required",
+  "expense_save_changes": "Save changes",
+  "expense_add": "Add expense",
+  "error_not_logged": "Error: You are not signed in.",
+  "expense_saved_success": "Expense saved successfully.",
+  "error_saving": "Error saving: {error}",
+  "@error_saving": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "expense_added_success": "Expense added successfully.",
+  "error_adding": "Error adding: {error}",
+  "@error_adding": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+
+  "expense_list_title": "My Expenses",
+  "filter_by_date_title": "Filter by Date",
+  "date_from_label": "From:",
+  "date_to_label": "To:",
+  "select_date": "Select date",
+  "cancel": "Cancel",
+  "apply": "Apply",
+  "filter_by_type_title": "Filter by Type",
+  "view_all": "View all",
+  "filter_by_vehicle_title": "Filter by Vehicle",
+  "no_vehicles_registered": "You don't have any registered vehicles",
+  "fechas_label": "Dates",
+  "date_start_short": "Start",
+  "date_today_label": "Today",
+  "date_range_from": "From {start}",
+  "@date_range_from": {
+    "placeholders": {
+      "start": {}
+    }
+  },
+  "date_range_to": "To {end}",
+  "@date_range_to": {
+    "placeholders": {
+      "end": {}
+    }
+  },
+  "date_range_between": "{start} - {end}",
+  "@date_range_between": {
+    "placeholders": {
+      "start": {},
+      "end": {}
+    }
+  },
+  "clear_filters_tooltip": "Clear filters",
+  "vehicle_label_single": "Vehicle",
+  "vehicle_placeholder": "Vehicle...",
+  "type_label": "Type",
+  "no_expenses_message": "You have no expenses.\nGo to 'My Vehicles' to add one from your car detail.",
+  "no_expenses_filtered": "No expenses found with these filters.",
+  "error_generic": "Error: {error}",
+  "@error_generic": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+
+  "home_title": "My Vehicles",
+  "no_vehicles_home": "You have no vehicles.\nTap (+) to add one.",
+  "loading": "Loading...",
+  "tooltip_expenses": "Expenses",
+  "tooltip_add_vehicle": "Add Vehicle",
+  "tooltip_settings": "Settings",
+  "no_vehicles_centered": "You have no vehicles.\nTap (+) to add one.",
+  "logout_confirmation_hint": "Sign out",
+  "reminders_button_tooltip": "Reminders",
+
+  "insurance_edit_title": "Edit Insurance",
+  "insurance_add_title": "Add Insurance",
+  "insurance_name_label": "Insurer",
+  "insurance_name_required": "Insurer name is required",
+  "policy_number_label": "Policy No.",
+  "policy_number_required": "Policy number is required",
+  "expiration_date_label": "Expiration date",
+  "expiration_date_required": "Expiration date is required",
+  "coverage_label": "Coverage type",
+  "coverage_required": "Coverage type is required",
+  "engine_number_label": "Engine No.",
+  "engine_number_required": "Engine number is required",
+  "chassis_number_label": "Chassis No.",
+  "chassis_number_required": "Chassis number is required",
+  "policy_holder_label": "Policy holder",
+  "policy_holder_required": "Policy holder name is required",
+  "policy_document_title": "Digital Policy Document",
+  "pick_file_hint": "Tap to upload Policy (PDF or Photo)",
+  "current_file_label": "Current file:",
+  "file_picker_edit_icon_semantic": "Edit file",
+  "save_changes": "Save changes",
+  "add_insurance": "Add insurance",
+  "insurance_saved_success": "Insurance saved successfully.",
+  "insurance_added_success": "Insurance added successfully.",
+  "error_adding": "Error adding: {error}",
+  "@error_adding": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+
+  "map_title": "Where did I park?",
+  "no_car_id": "No valid car id. Showing current location.",
+  "location_service_disabled": "Location service is disabled.",
+  "location_permission_denied": "Location permission denied.",
+  "location_permission_denied_forever": "Location permission denied permanently. Enable it from settings.",
+  "error_getting_location": "Error getting location: {error}",
+  "@error_getting_location": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+
+  "info_selected_location": "Selected location",
+  "info_parked_here": "Parked here",
+  "no_location_to_save": "No location to save. Press Update first.",
+  "error_saving_firestore": "Error saving to Firestore: {error}",
+  "@error_saving_firestore": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "error_searching_car": "Error searching car: {error}",
+  "@error_searching_car": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "marker_title_auto_parked": "Car {id} (parked)",
+  "@marker_title_auto_parked": {
+    "placeholders": {
+      "id": {}
+    }
+  },
+
+  "actualizar_button": "Update",
+  "guardar_button": "Save",
+  "mostrar_ubicacion_tooltip": "Show location",
+
+  "exact_alarms_permission_title": "Exact alarms permission",
+  "exact_alarms_permission_content": "To trigger reminders at the exact time we need you to enable \"Schedule exact alarms\" in your phone settings. Do you want to open settings now?",
+  "no_button": "No",
+  "open_button": "Open",
+  "reminder_new_title": "New reminder",
+  "reminder_edit_title": "Edit reminder",
+  "reminder_field_title_label": "Title",
+  "choose_date": "Choose date",
+  "choose_time": "Choose time",
+  "time_must_be_future": "The time must be in the future",
+  "reminder_done_delete": "Done / Delete",
+  "reminder_update": "Update",
+  "reminder_save": "Save",
+  "reminder_deleted_success": "Reminder deleted",
+  "reminder_updated_success": "Reminder updated",
+  "reminder_created_success": "Reminder created",
+  "generic_error": "Error: {error}",
+  "@generic_error": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "appbar_reminders_title": "My Reminders",
+  "no_reminders_message": "You have no reminders.\nGo to 'My Vehicles' to add one from your car detail.",
+  "vehicle_not_found": "Vehicle not found",
+
+  "vehicle_deleted_message": "Vehicle deleted. Returning to the list...",
+  "error_snapshot": "Error: {error}",
+  "@error_snapshot": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "not_available": "Not available",
+  "delete_vehicle_button": "Delete vehicle",
+  "park_label": "Park",
+  "reminders_label": "Reminders",
+  "section_vehicle_data": "VEHICLE DATA",
+  "edit_vehicle_tooltip": "Edit vehicle data",
+  "last_update_label": "Last update: {date}",
+  "@last_update_label": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "license_plate_label": "License: {license}",
+  "@license_plate_label": {
+    "placeholders": {
+      "license": {}
+    }
+  },
+  "brand_label": "Brand: {brand}",
+  "@brand_label": {
+    "placeholders": {
+      "brand": {}
+    }
+  },
+  "model_label": "Model: {model}",
+  "@model_label": {
+    "placeholders": {
+      "model": {}
+    }
+  },
+  "year_label": "Year: {year}",
+  "@year_label": {
+    "placeholders": {
+      "year": {}
+    }
+  },
+  "engine_label": "Engine: {engine}",
+  "@engine_label": {
+    "placeholders": {
+      "engine": {}
+    }
+  },
+  "transmission_label": "Transmission: {transmission}",
+  "@transmission_label": {
+    "placeholders": {
+      "transmission": {}
+    }
+  },
+  "insurance_section_title": "INSURANCE",
+  "view_policy_tooltip": "View circulation card",
+  "no_file_uploaded": "No file uploaded.",
+  "edit_insurance_tooltip": "Edit insurance data",
+  "add_insurance_message": "No insurance associated.",
+  "add_insurance_button": "Add Insurance",
+  "expenses_section_title": "RECENT EXPENSES",
+  "add_expense_tooltip": "Add expense",
+  "view_expenses_tooltip": "View vehicle expenses",
+  "no_expenses_registered": "No expenses recorded",
+  "add_expense_button": "Add Expense",
+  "generic_delete_success": "Vehicle created successfully.",
+  "generic_delete_error": "Error creating: {error}",
+  "@generic_delete_error": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+
+  "vehicle_edit_title": "Edit Vehicle",
+  "vehicle_add_title": "Add Vehicle",
+  "brand_label": "Brand",
+  "model_label": "Model",
+  "year_label": "Year",
+  "license_plate_label": "License",
+  "engine_label": "Engine",
+  "transmission_label": "Transmission",
+  "brand_required": "Please enter the brand",
+  "model_required": "Please enter the model",
+  "year_required": "Please enter the year",
+  "year_invalid": "Enter a valid year",
+  "license_plate_required": "Please enter the license plate",
+  "engine_required": "Please enter the engine",
+  "transmission_required": "Please enter the transmission",
+  "gallery_option": "Gallery / File explorer",
+  "camera_option": "Camera",
+  "no_image_selected": "No image selected.",
+  "image_load_error": "Error loading",
+  "image_picker_gallery_title": "Gallery / File explorer",
+  "image_picker_camera_title": "Camera",
+  "camera_button_tooltip": "Open image picker",
+  "save_changes_button": "Save changes",
+  "add_vehicle_button": "Add vehicle",
+  "vehicle_saved_success": "Vehicle saved successfully.",
+  "error_saving": "Error saving: {error}",
+  "@error_saving": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "vehicle_created_success": "Vehicle created successfully.",
+  "error_creating": "Error creating: {error}",
+  "@error_creating": {
+    "placeholders": {
+      "error": {}
+    }
+  }
+}

@@ -5,6 +5,7 @@ import 'package:caropshibrida/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:caropshibrida/l10n/app_localizations.dart';
 
 class ExpenseCard extends StatelessWidget {
   final Expense expense;
@@ -140,7 +141,7 @@ class ExpenseCard extends StatelessWidget {
                           );
                         },
                         constraints: const BoxConstraints(),
-                        tooltip: 'Editar',
+                        tooltip: AppLocalizations.of(context)!.editar,
                       ),
                       const SizedBox(width: 8),
                       IconButton(
@@ -148,7 +149,7 @@ class ExpenseCard extends StatelessWidget {
                         onPressed: () =>
                             _handleDelete(context, expenseService),
                         constraints: const BoxConstraints(),
-                        tooltip: 'Eliminar',
+                        tooltip: AppLocalizations.of(context)!.eliminar,
                       ),
                     ],
                   ),
@@ -204,12 +205,12 @@ class ExpenseCard extends StatelessWidget {
         bool isDeleting = false;
 
         return StatefulBuilder(
-          builder: (context, setState) {
+          builder: (innerContext, setState) {
+            final loc = AppLocalizations.of(dialogContext)!;
+
             return AlertDialog(
-              title: Text("Eliminar Gasto"),
-              content: Text(
-                "¿Seguro que quieres eliminar el gasto '${expense.description}'?",
-              ),
+              title: Text(loc.eliminarGastoTitle),
+              content: Text(loc.confirmDeleteExpense(expense.description)),
               actions: [
                 if (isDeleting)
                   const Padding(
@@ -223,7 +224,7 @@ class ExpenseCard extends StatelessWidget {
                 else ...[
                   TextButton(
                     onPressed: () => Navigator.pop(dialogContext),
-                    child: Text("Cancelar"),
+                    child: Text(loc.cancelar),
                   ),
                   TextButton(
                     onPressed: () async {
@@ -239,7 +240,11 @@ class ExpenseCard extends StatelessWidget {
 
                           if (parentContext.mounted) {
                             ScaffoldMessenger.of(parentContext).showSnackBar(
-                              const SnackBar(content: Text("Gasto eliminado")),
+                              SnackBar(
+                                content: Text(
+                                  AppLocalizations.of(parentContext)!.gastoEliminado,
+                                ),
+                              ),
                             );
                           }
                         }
@@ -250,12 +255,18 @@ class ExpenseCard extends StatelessWidget {
                           });
                           ScaffoldMessenger.of(
                             dialogContext,
-                          ).showSnackBar(SnackBar(content: Text("Error: $e")));
+                          ).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                AppLocalizations.of(dialogContext)!.errorEliminar(e.toString()),
+                              ),
+                            ),
+                          );
                         }
                       }
                     },
                     child: Text(
-                      "Eliminar",
+                      AppLocalizations.of(dialogContext)!.eliminar,
                       style: TextStyle(color: Colors.red),
                     ),
                   ),
