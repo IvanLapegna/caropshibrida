@@ -1,4 +1,17 @@
 {
+  "language_es": "Spanish",
+  "language_en": "English",
+  "language_pt": "Portuguese",
+  "select_language": "Select Language",
+  "settings_general_section": "General",
+  "settings_notifications_section": "Notifications",
+  "settings_permissions_section": "Permissions & System",
+  "settings_info_section": "Information",
+  "settings_receive_notifications": "Receive notifications",
+  "settings_camera_permission": "Camera Access",
+  "settings_system_settings": "Open system settings",
+  "settings_version": "Version",
+  "language_label": "Language",
   "iniciarSesion": "Sign in",
   "porFavorVerificaCorreo": "Please verify your email before signing in.",
   "credencialesInvalidas": "Invalid credentials",
@@ -238,48 +251,6 @@
   "reminders_label": "Reminders",
   "section_vehicle_data": "VEHICLE DATA",
   "edit_vehicle_tooltip": "Edit vehicle data",
-  "last_update_label": "Last update: {date}",
-  "@last_update_label": {
-    "placeholders": {
-      "date": {}
-    }
-  },
-  "license_plate_label": "License: {license}",
-  "@license_plate_label": {
-    "placeholders": {
-      "license": {}
-    }
-  },
-  "brand_label": "Brand: {brand}",
-  "@brand_label": {
-    "placeholders": {
-      "brand": {}
-    }
-  },
-  "model_label": "Model: {model}",
-  "@model_label": {
-    "placeholders": {
-      "model": {}
-    }
-  },
-  "year_label": "Year: {year}",
-  "@year_label": {
-    "placeholders": {
-      "year": {}
-    }
-  },
-  "engine_label": "Engine: {engine}",
-  "@engine_label": {
-    "placeholders": {
-      "engine": {}
-    }
-  },
-  "transmission_label": "Transmission: {transmission}",
-  "@transmission_label": {
-    "placeholders": {
-      "transmission": {}
-    }
-  },
   "insurance_section_title": "INSURANCE",
   "view_policy_tooltip": "View circulation card",
   "no_file_uploaded": "No file uploaded.",
@@ -301,6 +272,7 @@
 
   "vehicle_edit_title": "Edit Vehicle",
   "vehicle_add_title": "Add Vehicle",
+  "last_update_label": "Last Update",
   "brand_label": "Brand",
   "model_label": "Model",
   "year_label": "Year",

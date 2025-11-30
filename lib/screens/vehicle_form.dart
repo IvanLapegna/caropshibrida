@@ -1,5 +1,6 @@
 import 'package:caropshibrida/models/car_model.dart';
 import 'package:caropshibrida/services/car_service.dart';
+import 'package:caropshibrida/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/foundation.dart' show Uint8List, kIsWeb;
@@ -93,9 +94,9 @@ class _VehicleFormState extends State<VehicleForm> {
       final user = _authService.currentUser;
 
       if (user == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: No has iniciado sesión.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(context.l10n.error_not_logged)));
         return;
       }
 
@@ -122,12 +123,12 @@ class _VehicleFormState extends State<VehicleForm> {
           await _carService.updateCar(newCar, _selectedImage);
           Navigator.of(context).pop();
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Vehículo guardado con éxito.')),
+            SnackBar(content: Text(context.l10n.vehicle_saved_success)),
           );
         } catch (e) {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text('Error al guardar: $e')));
+          ).showSnackBar(SnackBar(content: Text(context.l10n.error_saving(e))));
         } finally {
           setState(() {
             _isLoading = false;
@@ -137,13 +138,13 @@ class _VehicleFormState extends State<VehicleForm> {
         try {
           await _carService.addCar(newCar, _selectedImage);
           Navigator.of(context).pop();
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Vehículo creado con éxito.')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(context.l10n.vehicle_created_success)),
+          );
         } catch (e) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Error al crear: $e')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(context.l10n.error_creating(e))),
+          );
         } finally {
           setState(() {
             _isLoading = false;
@@ -173,7 +174,7 @@ class _VehicleFormState extends State<VehicleForm> {
             children: <Widget>[
               ListTile(
                 leading: Icon(Icons.photo_library),
-                title: Text("Galería / Explorador de archivos"),
+                title: Text(context.l10n.gallery_option),
                 onTap: () {
                   _selectImage(ImageSource.gallery);
                   Navigator.of(context).pop();
@@ -183,7 +184,7 @@ class _VehicleFormState extends State<VehicleForm> {
               if (!kIsWeb)
                 ListTile(
                   leading: Icon(Icons.photo_camera),
-                  title: Text("Cámara"),
+                  title: Text(context.l10n.camera_option),
                   onTap: () {
                     _selectImage(ImageSource.camera);
                     Navigator.of(context).pop();
@@ -200,7 +201,11 @@ class _VehicleFormState extends State<VehicleForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isEdit ? "Editar Vehículo" : "Añadir Vehículo"),
+        title: Text(
+          _isEdit
+              ? context.l10n.vehicle_edit_title
+              : context.l10n.vehicle_add_title,
+        ),
         centerTitle: true,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(4.0),
@@ -224,12 +229,12 @@ class _VehicleFormState extends State<VehicleForm> {
                   TextFormField(
                     controller: _brandController,
                     decoration: InputDecoration(
-                      labelText: "Marca",
+                      labelText: context.l10n.brand_label,
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Por favor, ingresa la marca';
+                        return context.l10n.brand_required;
                       }
                       return null;
                     },
@@ -239,12 +244,12 @@ class _VehicleFormState extends State<VehicleForm> {
                   TextFormField(
                     controller: _modelController,
                     decoration: InputDecoration(
-                      labelText: "Modelo",
+                      labelText: context.l10n.model_label,
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Por favor, ingresa el modelo';
+                        return context.l10n.model_required;
                       }
                       return null;
                     },
@@ -254,16 +259,16 @@ class _VehicleFormState extends State<VehicleForm> {
                   TextFormField(
                     controller: _anioController,
                     decoration: InputDecoration(
-                      labelText: "Año",
+                      labelText: context.l10n.year_label,
                       border: OutlineInputBorder(),
                     ),
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Por favor, ingresa el año';
+                        return context.l10n.year_required;
                       }
                       if (int.tryParse(value) == null) {
-                        return 'Ingresa un año válido';
+                        return context.l10n.year_invalid;
                       }
                       return null;
                     },
@@ -273,12 +278,12 @@ class _VehicleFormState extends State<VehicleForm> {
                   TextFormField(
                     controller: _licensePlateController,
                     decoration: InputDecoration(
-                      labelText: "Patente",
+                      labelText: context.l10n.license_plate_label,
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Por favor, ingresa la patente';
+                        return context.l10n.license_plate_required;
                       }
                       return null;
                     },
@@ -288,12 +293,12 @@ class _VehicleFormState extends State<VehicleForm> {
                   TextFormField(
                     controller: _engineController,
                     decoration: InputDecoration(
-                      labelText: "Motor",
+                      labelText: context.l10n.engine_label,
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Por favor, ingresa el motor';
+                        return context.l10n.engine_required;
                       }
                       return null;
                     },
@@ -303,12 +308,12 @@ class _VehicleFormState extends State<VehicleForm> {
                   TextFormField(
                     controller: _transmissionController,
                     decoration: InputDecoration(
-                      labelText: "Transmisión",
+                      labelText: context.l10n.transmission_label,
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Por favor, ingresa la transmisión';
+                        return context.l10n.transmission_required;
                       }
                       return null;
                     },
@@ -402,7 +407,9 @@ class _VehicleFormState extends State<VehicleForm> {
                       child: _isLoading
                           ? const CircularProgressIndicator()
                           : Text(
-                              _isEdit ? "Guardar cambios" : "Añadir vehículo",
+                              _isEdit
+                                  ? context.l10n.save_changes_button
+                                  : context.l10n.add_vehicle_button,
                             ),
                     ),
                   ),
@@ -432,24 +439,28 @@ class _VehicleFormState extends State<VehicleForm> {
           return const Center(child: CircularProgressIndicator());
         },
         errorBuilder: (context, error, stackTrace) {
-          return const Column(
+          return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.broken_image, color: Colors.grey),
-              Text("Error al cargar"),
+              Text(context.l10n.image_load_error),
             ],
           );
         },
       );
     }
-    return const Column(
+    return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(Icons.image_not_supported_outlined, size: 40, color: Colors.grey),
-        SizedBox(height: 8),
+        const Icon(
+          Icons.image_not_supported_outlined,
+          size: 40,
+          color: Colors.grey,
+        ),
+        const SizedBox(height: 8),
         Text(
-          'Ninguna imagen seleccionada.',
-          style: TextStyle(color: Colors.grey),
+          context.l10n.no_image_selected,
+          style: const TextStyle(color: Colors.grey),
         ),
       ],
     );

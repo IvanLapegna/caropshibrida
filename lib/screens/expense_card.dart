@@ -146,8 +146,7 @@ class ExpenseCard extends StatelessWidget {
                       const SizedBox(width: 8),
                       IconButton(
                         icon: const Icon(Icons.delete, size: 20),
-                        onPressed: () =>
-                            _handleDelete(context, expenseService),
+                        onPressed: () => _handleDelete(context, expenseService),
                         constraints: const BoxConstraints(),
                         tooltip: AppLocalizations.of(context)!.eliminar,
                       ),
@@ -242,7 +241,9 @@ class ExpenseCard extends StatelessWidget {
                             ScaffoldMessenger.of(parentContext).showSnackBar(
                               SnackBar(
                                 content: Text(
-                                  AppLocalizations.of(parentContext)!.gastoEliminado,
+                                  AppLocalizations.of(
+                                    parentContext,
+                                  )!.gastoEliminado,
                                 ),
                               ),
                             );
@@ -253,12 +254,12 @@ class ExpenseCard extends StatelessWidget {
                           setState(() {
                             isDeleting = false;
                           });
-                          ScaffoldMessenger.of(
-                            dialogContext,
-                          ).showSnackBar(
+                          ScaffoldMessenger.of(dialogContext).showSnackBar(
                             SnackBar(
                               content: Text(
-                                AppLocalizations.of(dialogContext)!.errorEliminar(e.toString()),
+                                AppLocalizations.of(
+                                  dialogContext,
+                                )!.errorEliminar(e.toString()),
                               ),
                             ),
                           );

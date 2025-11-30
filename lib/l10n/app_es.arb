@@ -1,5 +1,17 @@
 {
-
+    "language_es": "Español",
+    "language_en": "Inglés",
+    "language_pt": "Portugués",
+    "select_language": "Seleccionar Idioma",
+    "language_label": "Idioma",
+    "settings_general_section": "General",
+    "settings_notifications_section": "Notificaciones",
+    "settings_permissions_section": "Permisos y Sistema",
+    "settings_info_section": "Información",
+    "settings_receive_notifications": "Recibir notificaciones",
+    "settings_camera_permission": "Acceso a Cámara",
+    "settings_system_settings": "Abrir configuración del sistema",
+    "settings_version": "Versión",
     "iniciarSesion": "Iniciar sesión",
     "porFavorVerificaCorreo": "Por favor, verifica tu correo antes de iniciar sesión.",
     "credencialesInvalidas": "Credenciales inválidas",
@@ -295,48 +307,6 @@
     "reminders_label": "Recordatorios",
     "section_vehicle_data": "DATOS DEL VEHÍCULO",
     "edit_vehicle_tooltip": "Editar datos del vehículo",
-    "last_update_label": "Última actualización: {date}",
-    "@last_update_label": {
-        "placeholders": {
-        "date": {}
-        }
-    },
-    "license_plate_label": "Patente: {license}",
-    "@license_plate_label": {
-        "placeholders": {
-        "license": {}
-        }
-    },
-    "brand_label": "Marca: {brand}",
-    "@brand_label": {
-        "placeholders": {
-        "brand": {}
-        }
-    },
-    "model_label": "Modelo: {model}",
-    "@model_label": {
-        "placeholders": {
-        "model": {}
-        }
-    },
-    "year_label": "Año: {year}",
-    "@year_label": {
-        "placeholders": {
-        "year": {}
-        }
-    },
-    "engine_label": "Motor: {engine}",
-    "@engine_label": {
-        "placeholders": {
-        "engine": {}
-        }
-    },
-    "transmission_label": "Transmisión: {transmission}",
-    "@transmission_label": {
-        "placeholders": {
-        "transmission": {}
-        }
-    },
     "insurance_section_title": "SEGURO",
     "view_policy_tooltip": "Ver tarjeta circulación",
     "no_file_uploaded": "No hay un archivo cargado.",
@@ -365,6 +335,7 @@
 
     "vehicle_edit_title": "Editar Vehículo",
     "vehicle_add_title": "Añadir Vehículo",
+    "last_update_label": "Última actualización",
     "brand_label": "Marca",
     "model_label": "Modelo",
     "year_label": "Año",

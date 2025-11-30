@@ -1,10 +1,12 @@
 import 'package:caropshibrida/models/car_model.dart';
 import 'package:caropshibrida/models/expense_model.dart';
 import 'package:caropshibrida/models/insurance_model.dart';
+import 'package:caropshibrida/provider/language_provider.dart';
 import 'package:caropshibrida/screens/expense_form.dart';
 import 'package:caropshibrida/screens/expense_list.dart';
 import 'package:caropshibrida/screens/insurance_form.dart';
 import 'package:caropshibrida/screens/reminderList_screen.dart';
+import 'package:caropshibrida/screens/settings_screen.dart';
 import 'package:caropshibrida/screens/vehicle_detail.dart';
 import 'package:caropshibrida/screens/vehicle_form.dart';
 import 'package:caropshibrida/services/car_service.dart';
@@ -45,6 +47,7 @@ void main() async {
         Provider<InsuranceService>(create: (_) => InsuranceService()),
         Provider<ExpenseService>(create: (_) => ExpenseService()),
         Provider<ReminderService>(create: (_) => ReminderService()),
+        ChangeNotifierProvider(create: (_) => LanguageProvider()),
       ],
       child: const MyApp(),
     ),
@@ -117,6 +120,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    final languageProvider = context.watch<LanguageProvider>();
+
     final authService = context.read<AuthService>();
 
     final baseScheme = ColorScheme.fromSeed(
@@ -136,6 +141,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
         "/add-vehicle": (context) => const VehicleForm(),
+        "/settings": (context) => const SettingsScreen(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == "/vehicle") {
@@ -276,12 +282,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: [
-        Locale('en'), // English
-        Locale('es'), // Spanish
-        Locale('pt'), // Spanish
-      ],
-
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: languageProvider.currentLocale,
       home: StreamBuilder<User?>(
         stream: authService.authStateChanges(),
         builder: (context, snapshot) {

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:caropshibrida/models/car_model.dart';
+import 'package:caropshibrida/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -7,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:caropshibrida/services/car_service.dart';
 import 'package:provider/provider.dart';
 import '../src/theme/colors.dart';
+
 class MapSample extends StatefulWidget {
   final Car car;
 
@@ -20,10 +22,13 @@ class MapSampleState extends State<MapSample> {
   late final CarService _carService;
   final Completer<GoogleMapController> _controller =
       Completer<GoogleMapController>();
-      CameraPosition _initialCamera = const CameraPosition(
-      target: LatLng(-34.6037, -58.3816), zoom: 12);
+  CameraPosition _initialCamera = const CameraPosition(
+    target: LatLng(-34.6037, -58.3816),
+    zoom: 12,
+  );
 
-  Marker? _carMarker; // marcador que representa donde está el auto (guardado o provisional)
+  Marker?
+  _carMarker; // marcador que representa donde está el auto (guardado o provisional)
   Position? _currentPosition;
   bool _loading = true;
   String? _error;
@@ -48,11 +53,11 @@ class MapSampleState extends State<MapSample> {
       _loading = true;
       _error = null;
     });
-    
+
     if (_carIdToFind.isEmpty) {
       if (!mounted) return;
       setState(() {
-        _error = 'No hay id de auto válido. Mostrando ubicación actual.';
+        _error = context.l10n.no_car_id;
       });
       await _determinePositionAndMove();
       return;
@@ -76,7 +81,7 @@ class MapSampleState extends State<MapSample> {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
         setState(() {
-          _error = 'El servicio de ubicación está desactivado.';
+          _error = context.l10n.location_service_disabled;
         });
         return null;
       }
@@ -86,7 +91,7 @@ class MapSampleState extends State<MapSample> {
         permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
           setState(() {
-            _error = 'Permiso de ubicación denegado.';
+            _error = context.l10n.location_permission_denied;
           });
           return null;
         }
@@ -94,8 +99,7 @@ class MapSampleState extends State<MapSample> {
 
       if (permission == LocationPermission.deniedForever) {
         setState(() {
-          _error =
-              'Permiso de ubicación denegado permanentemente. Habilitalo desde ajustes.';
+          _error = context.l10n.location_permission_denied_forever;
         });
         return null;
       }
@@ -107,7 +111,9 @@ class MapSampleState extends State<MapSample> {
       return pos;
     } catch (e) {
       setState(() {
-        _error = 'Error al obtener ubicación: $e';
+        _error = context.l10n.error_getting_location(
+          Easing.emphasizedAccelerate,
+        );
       });
       return null;
     }
@@ -131,9 +137,13 @@ class MapSampleState extends State<MapSample> {
     _currentPosition = pos;
 
     final GoogleMapController mapController = await _controller.future;
-    final CameraPosition cameraPosition =
-        CameraPosition(target: LatLng(pos.latitude, pos.longitude), zoom: 17);
-    await mapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+    final CameraPosition cameraPosition = CameraPosition(
+      target: LatLng(pos.latitude, pos.longitude),
+      zoom: 17,
+    );
+    await mapController.animateCamera(
+      CameraUpdate.newCameraPosition(cameraPosition),
+    );
 
     setState(() {
       _initialCamera = cameraPosition;
@@ -179,14 +189,18 @@ class MapSampleState extends State<MapSample> {
     final marker = Marker(
       markerId: const MarkerId('car_provisional'),
       position: posLatLng,
-      infoWindow: const InfoWindow(title: 'Ubicación seleccionada'),
+      infoWindow: InfoWindow(title: context.l10n.info_selected_location),
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
     );
 
     final GoogleMapController mapController = await _controller.future;
-    final CameraPosition cameraPosition =
-        CameraPosition(target: posLatLng, zoom: 17);
-    await mapController.animateCamera(CameraUpdate.newCameraPosition(cameraPosition));
+    final CameraPosition cameraPosition = CameraPosition(
+      target: posLatLng,
+      zoom: 17,
+    );
+    await mapController.animateCamera(
+      CameraUpdate.newCameraPosition(cameraPosition),
+    );
 
     setState(() {
       _carMarker = marker;
@@ -200,7 +214,7 @@ class MapSampleState extends State<MapSample> {
   Future<void> _guardarParking() async {
     if (_carMarker == null) {
       setState(() {
-        _error = 'No hay ubicación para guardar. Presiona Actualizar primero.';
+        _error = context.l10n.no_location_to_save;
       });
       return;
     }
@@ -218,17 +232,17 @@ class MapSampleState extends State<MapSample> {
           .collection('cars')
           .doc(_carIdToFind)
           .update({
-        'parked': true,
-        'parkedLat': lat,
-        'parkedLng': lng,
-        'parkingDate': Timestamp.now(),
-      });
+            'parked': true,
+            'parkedLat': lat,
+            'parkedLng': lng,
+            'parkingDate': Timestamp.now(),
+          });
 
       // dejamos el marker como marcador "oficial" del auto (misma id pero se puede sobrescribir)
       final savedMarker = Marker(
         markerId: MarkerId('car_$_carIdToFind'),
         position: LatLng(lat, lng),
-        infoWindow: const InfoWindow(title: 'Estacionado aquí'),
+        infoWindow: InfoWindow(title: context.l10n.info_parked_here),
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure),
       );
 
@@ -239,7 +253,7 @@ class MapSampleState extends State<MapSample> {
       });
     } catch (e) {
       setState(() {
-        _error = 'Error al guardar en Firestore: $e';
+        _error = context.l10n.error_saving_firestore(e);
         _loading = false;
       });
     }
@@ -277,16 +291,18 @@ class MapSampleState extends State<MapSample> {
       // Si el mapa ya está creado, movemos la cámara
       if (_controller.isCompleted) {
         final ctrl = await _controller.future;
-        await ctrl.animateCamera(CameraUpdate.newCameraPosition(
-          CameraPosition(target: carLat, zoom: 17),
-        ));
+        await ctrl.animateCamera(
+          CameraUpdate.newCameraPosition(
+            CameraPosition(target: carLat, zoom: 17),
+          ),
+        );
       }
 
       return true; // mostramos el auto y ya movimos la cámara
     } catch (e) {
       if (!mounted) return false;
       setState(() {
-        _error = 'Error buscando el auto: $e';
+        _error = context.l10n.error_searching_car(e);
       });
       return false;
     }
@@ -302,12 +318,10 @@ class MapSampleState extends State<MapSample> {
   @override
   Widget build(BuildContext context) {
     final bottomPadding = 16.0 + MediaQuery.of(context).padding.bottom;
-    final appColors = Theme.of(context).extension<AppColors>() ?? appColorsLight;
+    final appColors =
+        Theme.of(context).extension<AppColors>() ?? appColorsLight;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('¿Donde Estacione?'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: Text(context.l10n.map_title), centerTitle: true),
       body: Stack(
         children: [
           GoogleMap(
@@ -320,8 +334,11 @@ class MapSampleState extends State<MapSample> {
             onMapCreated: (GoogleMapController controller) {
               if (!_controller.isCompleted) _controller.complete(controller);
               if (_carMarker != null) {
-                controller.animateCamera(CameraUpdate.newCameraPosition(
-                    CameraPosition(target: _carMarker!.position, zoom: 17)));
+                controller.animateCamera(
+                  CameraUpdate.newCameraPosition(
+                    CameraPosition(target: _carMarker!.position, zoom: 17),
+                  ),
+                );
               }
             },
           ),
@@ -354,7 +371,7 @@ class MapSampleState extends State<MapSample> {
                   heroTag: 'actualizar',
                   onPressed: _actualizarUbicacion,
                   backgroundColor: appColors.button,
-                  label: const Text('Actualizar'),
+                  label: Text(context.l10n.actualizar_button),
                   icon: const Icon(Icons.edit_location_alt),
                 ),
                 const SizedBox(height: 10),
@@ -366,7 +383,7 @@ class MapSampleState extends State<MapSample> {
                       heroTag: 'guardar',
                       onPressed: _guardarParking,
                       backgroundColor: appColors.green,
-                      label: const Text('Guardar'),
+                      label: Text(context.l10n.guardar_button),
                       icon: const Icon(Icons.save),
                     ),
                   ),
@@ -376,21 +393,17 @@ class MapSampleState extends State<MapSample> {
           ),
 
           Positioned(
-          right: 12,
-          bottom: bottomPadding,
-          child: FloatingActionButton(
-            heroTag: 'mostrar',
-            onPressed: _goToCurrentLocation,
-            backgroundColor: appColors.button,
-            child: const Icon(Icons.my_location),
-            
+            right: 12,
+            bottom: bottomPadding,
+            child: FloatingActionButton(
+              heroTag: 'mostrar',
+              onPressed: _goToCurrentLocation,
+              backgroundColor: appColors.button,
+              child: const Icon(Icons.my_location),
+            ),
           ),
-        ),
-
         ],
       ),
-
-
     );
   }
 

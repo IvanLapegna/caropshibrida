@@ -9,6 +9,45 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get language_es => 'Spanish';
+
+  @override
+  String get language_en => 'English';
+
+  @override
+  String get language_pt => 'Portuguese';
+
+  @override
+  String get select_language => 'Select Language';
+
+  @override
+  String get language_label => 'Language';
+
+  @override
+  String get settings_general_section => 'General';
+
+  @override
+  String get settings_notifications_section => 'Notifications';
+
+  @override
+  String get settings_permissions_section => 'Permissions & System';
+
+  @override
+  String get settings_info_section => 'Information';
+
+  @override
+  String get settings_receive_notifications => 'Receive notifications';
+
+  @override
+  String get settings_camera_permission => 'Camera Access';
+
+  @override
+  String get settings_system_settings => 'Open system settings';
+
+  @override
+  String get settings_version => 'Version';
+
+  @override
   String get iniciarSesion => 'Sign in';
 
   @override
@@ -500,41 +539,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get edit_vehicle_tooltip => 'Edit vehicle data';
 
   @override
-  String last_update_label(Object date) {
-    return 'Last update: $date';
-  }
-
-  @override
-  String license_plate_label(Object license) {
-    return 'License';
-  }
-
-  @override
-  String brand_label(Object brand) {
-    return 'Brand';
-  }
-
-  @override
-  String model_label(Object model) {
-    return 'Model';
-  }
-
-  @override
-  String year_label(Object year) {
-    return 'Year';
-  }
-
-  @override
-  String engine_label(Object engine) {
-    return 'Engine';
-  }
-
-  @override
-  String transmission_label(Object transmission) {
-    return 'Transmission';
-  }
-
-  @override
   String get insurance_section_title => 'INSURANCE';
 
   @override
@@ -580,6 +584,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get vehicle_add_title => 'Add Vehicle';
+
+  @override
+  String get last_update_label => 'Last Update';
+
+  @override
+  String get brand_label => 'Brand';
+
+  @override
+  String get model_label => 'Model';
+
+  @override
+  String get year_label => 'Year';
+
+  @override
+  String get license_plate_label => 'License';
+
+  @override
+  String get engine_label => 'Engine';
+
+  @override
+  String get transmission_label => 'Transmission';
 
   @override
   String get brand_required => 'Please enter the brand';

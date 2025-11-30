@@ -1,4 +1,17 @@
 {
+  "language_es": "Espanhol",
+  "language_en": "Inglês",
+  "language_pt": "Português",
+  "select_language": "Selecionar Idioma",
+  "settings_general_section": "Geral",
+  "settings_notifications_section": "Notificações",
+  "settings_permissions_section": "Permissões e Sistema",
+  "settings_info_section": "Informações",
+  "settings_receive_notifications": "Receber notificações",
+  "settings_camera_permission": "Acesso à Câmera",
+  "settings_system_settings": "Abrir configurações do sistema",
+  "settings_version": "Versão",
+  "language_label": "Idioma",
   "iniciarSesion": "Entrar",
   "porFavorVerificaCorreo": "Por favor, verifique seu e-mail antes de entrar.",
   "credencialesInvalidas": "Credenciais inválidas",
@@ -238,48 +251,6 @@
   "reminders_label": "Lembretes",
   "section_vehicle_data": "DADOS DO VEÍCULO",
   "edit_vehicle_tooltip": "Editar dados do veículo",
-  "last_update_label": "Última atualização: {date}",
-  "@last_update_label": {
-    "placeholders": {
-      "date": {}
-    }
-  },
-  "license_plate_label": "Placa: {license}",
-  "@license_plate_label": {
-    "placeholders": {
-      "license": {}
-    }
-  },
-  "brand_label": "Marca: {brand}",
-  "@brand_label": {
-    "placeholders": {
-      "brand": {}
-    }
-  },
-  "model_label": "Modelo: {model}",
-  "@model_label": {
-    "placeholders": {
-      "model": {}
-    }
-  },
-  "year_label": "Ano: {year}",
-  "@year_label": {
-    "placeholders": {
-      "year": {}
-    }
-  },
-  "engine_label": "Motor: {engine}",
-  "@engine_label": {
-    "placeholders": {
-      "engine": {}
-    }
-  },
-  "transmission_label": "Transmissão: {transmission}",
-  "@transmission_label": {
-    "placeholders": {
-      "transmission": {}
-    }
-  },
   "insurance_section_title": "SEGURO",
   "view_policy_tooltip": "Ver documento da apólice",
   "no_file_uploaded": "Nenhum arquivo enviado.",
@@ -301,6 +272,7 @@
 
   "vehicle_edit_title": "Editar Veículo",
   "vehicle_add_title": "Adicionar Veículo",
+  "last_update_label": "última atualização",
   "brand_label": "Marca",
   "model_label": "Modelo",
   "year_label": "Ano",

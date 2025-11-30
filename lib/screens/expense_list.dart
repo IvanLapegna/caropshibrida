@@ -5,6 +5,7 @@ import 'package:caropshibrida/screens/expense_card.dart';
 import 'package:caropshibrida/services/auth_service.dart';
 import 'package:caropshibrida/services/car_service.dart';
 import 'package:caropshibrida/services/expense_service.dart';
+import 'package:caropshibrida/utils/extensions.dart';
 import 'package:caropshibrida/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -98,21 +99,21 @@ class _ExpenseListState extends State<ExpenseList> {
         return StatefulBuilder(
           builder: (context, setStateDialog) {
             return AlertDialog(
-              title: const Text(
-                "Filtrar por Fecha",
+              title: Text(
+                context.l10n.filter_by_date_title,
                 style: TextStyle(fontSize: 18),
               ),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   ListTile(
-                    title: const Text(
-                      "Desde:",
+                    title: Text(
+                      context.l10n.date_from_label,
                       style: TextStyle(fontSize: 14, color: Colors.grey),
                     ),
                     subtitle: Text(
                       tempStart == null
-                          ? "Seleccionar fecha"
+                          ? context.l10n.select_date
                           : DateFormat('dd/MM/yyyy').format(tempStart!),
                       style: const TextStyle(
                         fontSize: 16,
@@ -150,13 +151,13 @@ class _ExpenseListState extends State<ExpenseList> {
                   const SizedBox(height: 10),
 
                   ListTile(
-                    title: const Text(
-                      "Hasta:",
+                    title: Text(
+                      context.l10n.date_to_label,
                       style: TextStyle(fontSize: 14, color: Colors.grey),
                     ),
                     subtitle: Text(
                       tempEnd == null
-                          ? "Seleccionar fecha"
+                          ? context.l10n.select_date
                           : DateFormat('dd/MM/yyyy').format(tempEnd!),
                       style: const TextStyle(
                         fontSize: 16,
@@ -185,7 +186,7 @@ class _ExpenseListState extends State<ExpenseList> {
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(dialogContext),
-                  child: const Text("Cancelar"),
+                  child: Text(context.l10n.cancel),
                 ),
                 ElevatedButton(
                   onPressed: (tempStart != null || tempEnd != null)
@@ -198,7 +199,7 @@ class _ExpenseListState extends State<ExpenseList> {
                           Navigator.pop(dialogContext);
                         }
                       : null,
-                  child: const Text("Aplicar"),
+                  child: Text(context.l10n.apply),
                 ),
               ],
             );
@@ -217,8 +218,8 @@ class _ExpenseListState extends State<ExpenseList> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                "Filtrar por Tipo",
+              Text(
+                context.l10n.filter_by_type_title,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const Divider(),
@@ -238,7 +239,7 @@ class _ExpenseListState extends State<ExpenseList> {
                 ),
               ),
               ListTile(
-                title: const Text("Ver todos"),
+                title: Text(context.l10n.view_all),
                 leading: const Icon(Icons.clear_all),
                 onTap: () {
                   setState(() {
@@ -264,15 +265,15 @@ class _ExpenseListState extends State<ExpenseList> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
-                "Filtrar por Vehículo",
+              Text(
+                context.l10n.filter_by_vehicle_title,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const Divider(),
               if (_userCars.isEmpty)
-                const Padding(
+                Padding(
                   padding: EdgeInsets.all(16.0),
-                  child: Text("No tienes vehículos registrados"),
+                  child: Text(context.l10n.no_vehicles_registered),
                 ),
               ..._userCars.map(
                 (car) => ListTile(
@@ -290,7 +291,7 @@ class _ExpenseListState extends State<ExpenseList> {
                 ),
               ),
               ListTile(
-                title: const Text("Ver todos"),
+                title: Text(context.l10n.view_all),
                 leading: const Icon(Icons.clear_all),
                 onTap: () {
                   setState(() {
@@ -308,19 +309,21 @@ class _ExpenseListState extends State<ExpenseList> {
   }
 
   String _getDateLabel() {
-    if (_selectedStartDate == null && _selectedEndDate == null) return "Fechas";
+    if (_selectedStartDate == null && _selectedEndDate == null)
+      return context.l10n.fechas_label;
 
     final startStr = _selectedStartDate != null
         ? DateFormat('dd/MM').format(_selectedStartDate!)
-        : "Inicio";
+        : context.l10n.date_start_short;
     final endStr = _selectedEndDate != null
         ? DateFormat('dd/MM').format(_selectedEndDate!)
-        : "Hoy";
+        : context.l10n.date_today_label;
 
-    if (_selectedStartDate != null && _selectedEndDate == null)
-      return "Desde $startStr";
+    if (_selectedStartDate != null && _selectedEndDate == null) {
+      return context.l10n.date_from_label + " " + startStr;
+    }
     if (_selectedStartDate == null && _selectedEndDate != null)
-      return "Hasta $endStr";
+      return context.l10n.date_to_label + " " + endStr;
 
     return "$startStr - $endStr";
   }
@@ -329,7 +332,7 @@ class _ExpenseListState extends State<ExpenseList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mis Gastos'),
+        title: Text(context.l10n.expense_list_title),
         automaticallyImplyLeading: false,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(4.0),
@@ -350,7 +353,7 @@ class _ExpenseListState extends State<ExpenseList> {
               _selectedEndDate != null)
             IconButton(
               icon: const Icon(Icons.filter_alt_off),
-              tooltip: "Limpiar filtros",
+              tooltip: context.l10n.clear_filters_tooltip,
               onPressed: () {
                 setState(() {
                   _selectedCarId = null;
@@ -372,7 +375,8 @@ class _ExpenseListState extends State<ExpenseList> {
               children: [
                 FilterChip(
                   label: Text(() {
-                    if (_selectedCarId == null) return "Vehículo";
+                    if (_selectedCarId == null)
+                      return context.l10n.vehicle_label_single;
 
                     final carInList = _userCars
                         .where((c) => c.id == _selectedCarId)
@@ -386,7 +390,7 @@ class _ExpenseListState extends State<ExpenseList> {
                         widget.preselectedCarName != null) {
                       return widget.preselectedCarName!;
                     }
-                    return "Vehículo...";
+                    return context.l10n.vehicle_placeholder;
                   }()),
                   selected: _selectedCarId != null,
                   onSelected: (_) => _showCarFilter(),
@@ -397,7 +401,7 @@ class _ExpenseListState extends State<ExpenseList> {
                 FilterChip(
                   label: Text(
                     _selectedExpenseTypeId == null
-                        ? "Tipo"
+                        ? context.l10n.type_label
                         : _expenseTypes
                               .firstWhere(
                                 (expense) =>
@@ -436,11 +440,11 @@ class _ExpenseListState extends State<ExpenseList> {
                 }
 
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(
+                  return Center(
                     child: Text(
-                      "No tienes gastos.\nVe a la sección 'Mis Vehículos' para añadir uno desde el detalle de tu auto.",
+                      context.l10n.no_expenses_message,
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 18, color: Colors.grey),
+                      style: const TextStyle(fontSize: 18, color: Colors.grey),
                     ),
                   );
                 }
@@ -460,8 +464,8 @@ class _ExpenseListState extends State<ExpenseList> {
                             color: Colors.grey[700],
                           ),
                           const SizedBox(height: 16),
-                          const Text(
-                            "No se encontraron gastos con estos filtros.",
+                          Text(
+                            context.l10n.no_expenses_filtered,
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 16, color: Colors.grey),
                           ),

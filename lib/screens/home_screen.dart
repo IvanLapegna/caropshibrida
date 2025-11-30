@@ -2,6 +2,7 @@ import 'package:caropshibrida/models/car_model.dart';
 import 'package:caropshibrida/screens/vehicle_card.dart';
 import 'package:caropshibrida/services/auth_service.dart';
 import 'package:caropshibrida/services/car_service.dart';
+import 'package:caropshibrida/utils/extensions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -35,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mis Vehículos'),
+        title: Text(context.l10n.home_title),
         automaticallyImplyLeading: false,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(4.0),
@@ -49,14 +50,10 @@ class _HomeScreenState extends State<HomeScreen> {
           if (!kIsWeb)
             IconButton(
               icon: const Icon(Icons.notifications),
-              onPressed: ()  {
+              onPressed: () {
                 Navigator.pushNamed(context, "/reminders");
-
               },
             ),
-
-
-          
 
           IconButton(
             icon: const Icon(Icons.logout),
@@ -76,9 +73,9 @@ class _HomeScreenState extends State<HomeScreen> {
             return Center(child: Text("Error: ${snapshot.error.toString()}"));
           }
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(
+            return Center(
               child: Text(
-                "No tienes vehículos.\nPresiona (+) para añadir uno.",
+                context.l10n.no_vehicles_centered,
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 18, color: Colors.grey),
               ),
@@ -120,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
             IconButton(
               icon: const Icon(Icons.attach_money),
               iconSize: 28.0,
-              tooltip: 'Gastos',
+              tooltip: context.l10n.tooltip_expenses,
               onPressed: () {
                 Navigator.pushNamed(context, "/expenses");
               },
@@ -129,24 +126,21 @@ class _HomeScreenState extends State<HomeScreen> {
             IconButton(
               icon: const Icon(Icons.add_circle),
               iconSize: 28.0,
-              tooltip: 'Añadir Vehículo',
+              tooltip: context.l10n.tooltip_add_vehicle,
               onPressed: () {
                 Navigator.pushNamed(context, "/add-vehicle");
               },
             ),
 
-
             // Botón de Ajustes
             IconButton(
               icon: const Icon(Icons.settings),
               iconSize: 28.0,
-              tooltip: 'Ajustes',
+              tooltip: context.l10n.tooltip_settings,
               onPressed: () {
-                // ¡Recuerda definir esta ruta en MyApp.dart!
                 Navigator.pushNamed(context, "/settings");
               },
             ),
-
           ],
         ),
       ),

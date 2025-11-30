@@ -37,9 +37,9 @@ class Expense {
     return Expense(
       id: documentId,
       description: map["description"] ?? "",
-      amount: map["amount"] ?? "",
+      amount: (map["amount"] as num?)?.toDouble() ?? 0.0,
       date: (map["date"] as Timestamp?)?.toDate() ?? DateTime.now(),
-      expenseTypeId: map["expenseTypeId"] ?? 0,
+      expenseTypeId: map["expenseTypeId"] ?? "",
       carId: map["carId"] ?? "",
       carName: map["carName"] ?? "Vehículo no encontrado",
       userId: map["userId"] ?? "",

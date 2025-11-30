@@ -3,6 +3,7 @@ import 'package:caropshibrida/models/reminder_model.dart';
 import 'package:caropshibrida/services/auth_service.dart';
 import 'package:caropshibrida/services/car_service.dart';
 import 'package:caropshibrida/services/reminder_service.dart';
+import 'package:caropshibrida/utils/extensions.dart';
 import 'package:caropshibrida/widgets/reminder_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +14,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter/services.dart';
-
 
 const _exactAlarmsChannel = MethodChannel('com.caropshibrida/exact_alarms');
 
@@ -45,15 +45,14 @@ class _ReminderListState extends State<ReminderList> {
     if (Platform.isAndroid) {
       _checkExactAlarmPermissionAndMaybeOpenSettings();
     }
-    
-
   }
 
-
-    Future<void> _checkExactAlarmPermissionAndMaybeOpenSettings() async {
+  Future<void> _checkExactAlarmPermissionAndMaybeOpenSettings() async {
     try {
-      final bool canSchedule = await _exactAlarmsChannel
-              .invokeMethod<bool>('canScheduleExactAlarms') ??
+      final bool canSchedule =
+          await _exactAlarmsChannel.invokeMethod<bool>(
+            'canScheduleExactAlarms',
+          ) ??
           true; // por defecto true en caso de error
 
       debugPrint('canScheduleExactAlarms = $canSchedule');
@@ -63,18 +62,22 @@ class _ReminderListState extends State<ReminderList> {
         final open = await showDialog<bool>(
           context: context,
           builder: (ctx) => AlertDialog(
-            title: const Text('Permiso para alarmas exactas'),
-            content: const Text(
-                'Para que los recordatorios se desencadenen a la hora exacta necesitamos que actives "Programar alarmas exactas" en la configuración del teléfono. ¿Querés abrir la configuración ahora?'),
+            title: Text(context.l10n.exact_alarms_permission_title),
+            content: Text(context.l10n.exact_alarms_permission_content),
             actions: [
-              TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('No')),
-              TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: const Text('Abrir')),
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(false),
+                child: Text(context.l10n.no_button),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(true),
+                child: Text(context.l10n.open_button),
+              ),
             ],
           ),
         );
 
         if (open == true) {
-
           await openExactAlarmPermissionSettingsViaNative();
         }
       }
@@ -82,25 +85,29 @@ class _ReminderListState extends State<ReminderList> {
       debugPrint('Error comprobando permiso exact alarms: $e');
     }
   }
-    Future<void> openExactAlarmPermissionSettingsViaNative() async {
-      const channel = MethodChannel('com.caropshibrida/exact_alarms');
-      try {
-        await channel.invokeMethod('openScheduleExactAlarmSettings');
-      } on PlatformException catch (e) {
-        debugPrint('openScheduleExactAlarmSettings fallo: $e — fallback a AndroidIntent');
-        // opcional: mantener tu fallback con AndroidIntent aquí
-      }
-    }
-    Future<void> openExactAlarmPermissionSettings() async {
-      if (!Platform.isAndroid) return;
 
-      final info = await PackageInfo.fromPlatform();
-      final packageName = info.packageName;
-
-      final intent = AndroidIntent(
-        action: 'android.settings.REQUEST_SCHEDULE_EXACT_ALARM',
-        data: 'package:$packageName',
+  Future<void> openExactAlarmPermissionSettingsViaNative() async {
+    const channel = MethodChannel('com.caropshibrida/exact_alarms');
+    try {
+      await channel.invokeMethod('openScheduleExactAlarmSettings');
+    } on PlatformException catch (e) {
+      debugPrint(
+        'openScheduleExactAlarmSettings fallo: $e — fallback a AndroidIntent',
       );
+      // opcional: mantener tu fallback con AndroidIntent aquí
+    }
+  }
+
+  Future<void> openExactAlarmPermissionSettings() async {
+    if (!Platform.isAndroid) return;
+
+    final info = await PackageInfo.fromPlatform();
+    final packageName = info.packageName;
+
+    final intent = AndroidIntent(
+      action: 'android.settings.REQUEST_SCHEDULE_EXACT_ALARM',
+      data: 'package:$packageName',
+    );
 
     try {
       await intent.launch();
@@ -132,17 +139,27 @@ class _ReminderListState extends State<ReminderList> {
       debugPrint('No se pudo abrir MANAGE_ALL_APPLICATIONS_SETTINGS: $e');
     }
   }
-  Future<void> _showReminderSheet(BuildContext context, String? carId, [Reminder? reminder]) async {
+
+  Future<void> _showReminderSheet(
+    BuildContext context,
+    String? carId, [
+    Reminder? reminder,
+  ]) async {
     final isEdit = reminder != null;
     final titleCtrl = TextEditingController(text: reminder?.title ?? '');
-    DateTime? pickedDate = reminder?.notifyAt != null ? (reminder!.notifyAt).toDate() : null;
-    TimeOfDay? pickedTime = pickedDate != null ? TimeOfDay(hour: pickedDate.hour, minute: pickedDate.minute) : null;
+    DateTime? pickedDate = reminder?.notifyAt != null
+        ? (reminder!.notifyAt).toDate()
+        : null;
+    TimeOfDay? pickedTime = pickedDate != null
+        ? TimeOfDay(hour: pickedDate.hour, minute: pickedDate.minute)
+        : null;
     final user = _authService.currentUser;
 
     String twoDigits(int n) => n.toString().padLeft(2, '0');
-    String formatDate(DateTime d) => "${twoDigits(d.day)}/${twoDigits(d.month)}/${d.year}";
-    String formatTimeOfDay(TimeOfDay t) => "${twoDigits(t.hour)}:${twoDigits(t.minute)}";
-
+    String formatDate(DateTime d) =>
+        "${twoDigits(d.day)}/${twoDigits(d.month)}/${d.year}";
+    String formatTimeOfDay(TimeOfDay t) =>
+        "${twoDigits(t.hour)}:${twoDigits(t.minute)}";
 
     await showModalBottomSheet(
       context: context,
@@ -152,270 +169,323 @@ class _ReminderListState extends State<ReminderList> {
       ),
       builder: (ctx) {
         // StatefulBuilder para controlar el estado dentro del modal
-        return StatefulBuilder(builder: (ctx, setModalState) {
-          final canSave = titleCtrl.text.trim().isNotEmpty && pickedDate != null && pickedTime != null;
+        return StatefulBuilder(
+          builder: (ctx, setModalState) {
+            final canSave =
+                titleCtrl.text.trim().isNotEmpty &&
+                pickedDate != null &&
+                pickedTime != null;
 
-          return Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(ctx).viewInsets.bottom + 20, // más espacio cuando aparece el teclado
-              left: 16,
-              right: 16,
-              top: 16,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Cabecera
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        isEdit ? 'Editar recordatorio' : 'Nuevo recordatorio',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.of(ctx).pop(),
-                    ),
-                  ],
-                ),
-
-                // Título
-                TextField(
-                  controller: titleCtrl,
-                  decoration: const InputDecoration(
-                    labelText: 'Título',
-                    border: OutlineInputBorder(),
-                    isDense: true,
-                  ),
-                  onChanged: (_) => setModalState(() {}), // refresca el estado para habilitar/deshabilitar guardar
-                ),
-                const SizedBox(height: 12),
-
-                // Botones de fecha / hora
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        icon: const Icon(Icons.calendar_today),
-                        label: Text(
-                          pickedDate == null ? 'Elegir fecha' : formatDate(pickedDate!),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        onPressed: () async {
-                          final dt = await showDatePicker(
-                            context: ctx,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime.now(),
-                            lastDate: DateTime(2100),
-                          );
-                          if (dt != null) {
-                            setModalState(() => pickedDate = dt);
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 12)),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        icon: const Icon(Icons.access_time),
-                        label: Text(
-                          pickedTime == null ? 'Elegir hora' : formatTimeOfDay(pickedTime!),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        onPressed: () async {
-                          final t = await showTimePicker(
-                            context: ctx,
-                            initialTime: TimeOfDay.now(),
-                          );
-                         if (t != null) {
-                          final now = DateTime.now();
-                          final selected = DateTime(
-                            pickedDate!.year,
-                            pickedDate!.month,
-                            pickedDate!.day,
-                            t.hour,
-                            t.minute,
-                          );
-
-                          if (selected.isBefore(now)) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('La hora debe ser futura')),
-                            );
-                            return; // no guardar la hora
-                          }
-
-                          setModalState(() => pickedTime = t);
-                        }
-                        },
-                        style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 12)),
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 36),
-                if (isEdit) ...[
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom:
+                    MediaQuery.of(ctx).viewInsets.bottom +
+                    20, // más espacio cuando aparece el teclado
+                left: 16,
+                right: 16,
+                top: 16,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Cabecera
                   Row(
                     children: [
-                      // Botón izquierdo: Realizado / Eliminar (abre diálogo de opciones)
                       Expanded(
-                        child: 
-                          ElevatedButton(
+                        child: Text(
+                          isEdit
+                              ? context.l10n.reminder_edit_title
+                              : context.l10n.reminder_new_title,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () => Navigator.of(ctx).pop(),
+                      ),
+                    ],
+                  ),
+
+                  // Título
+                  TextField(
+                    controller: titleCtrl,
+                    decoration: InputDecoration(
+                      labelText: context.l10n.reminder_field_title_label,
+                      border: OutlineInputBorder(),
+                      isDense: true,
+                    ),
+                    onChanged: (_) => setModalState(
+                      () {},
+                    ), // refresca el estado para habilitar/deshabilitar guardar
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Botones de fecha / hora
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          icon: const Icon(Icons.calendar_today),
+                          label: Text(
+                            pickedDate == null
+                                ? context.l10n.choose_date
+                                : formatDate(pickedDate!),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          onPressed: () async {
+                            final dt = await showDatePicker(
+                              context: ctx,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime.now(),
+                              lastDate: DateTime(2100),
+                            );
+                            if (dt != null) {
+                              setModalState(() => pickedDate = dt);
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          icon: const Icon(Icons.access_time),
+                          label: Text(
+                            pickedTime == null
+                                ? context.l10n.choose_time
+                                : formatTimeOfDay(pickedTime!),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          onPressed: () async {
+                            final t = await showTimePicker(
+                              context: ctx,
+                              initialTime: TimeOfDay.now(),
+                            );
+                            if (t != null) {
+                              final now = DateTime.now();
+                              final selected = DateTime(
+                                pickedDate!.year,
+                                pickedDate!.month,
+                                pickedDate!.day,
+                                t.hour,
+                                t.minute,
+                              );
+
+                              if (selected.isBefore(now)) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      context.l10n.time_must_be_future,
+                                    ),
+                                  ),
+                                );
+                                return; // no guardar la hora
+                              }
+
+                              setModalState(() => pickedTime = t);
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 36),
+                  if (isEdit) ...[
+                    Row(
+                      children: [
+                        // Botón izquierdo: Realizado / Eliminar (abre diálogo de opciones)
+                        Expanded(
+                          child: ElevatedButton(
                             onPressed: () async {
                               try {
-                                await _reminderService.deleteReminder(reminder.id!);
+                                await _reminderService.deleteReminder(
+                                  reminder.id!,
+                                );
                                 Navigator.of(ctx).pop();
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text('Recordatorio eliminado')),
+                                  SnackBar(
+                                    content: Text(
+                                      context.l10n.reminder_deleted_success,
+                                    ),
+                                  ),
                                 );
                               } catch (e) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text('Error: ${e.toString()}')),
-                                  );
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Error: ${e.toString()}'),
+                                  ),
+                                );
                               }
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color.fromARGB(255, 230, 164, 0),
+                              backgroundColor: const Color.fromARGB(
+                                255,
+                                230,
+                                164,
+                                0,
+                              ),
                               minimumSize: const Size.fromHeight(48),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8))),
-                              
-                            child: const Text('Realizado / Eliminar'),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
 
+                            child: Text(context.l10n.reminder_done_delete),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
 
-                            
-                          )
-
-
-                      ),   
-                      const SizedBox(width: 8),
-
-                      Expanded(
-                        child: 
-                          ElevatedButton(
+                        Expanded(
+                          child: ElevatedButton(
                             onPressed: canSave
-                              ? () async {
-                                  final title = titleCtrl.text.trim();
-                                  final dateTime = DateTime(
-                                    pickedDate!.year,
-                                    pickedDate!.month,
-                                    pickedDate!.day,
-                                    pickedTime!.hour,
-                                    pickedTime!.minute,
-                                  );
+                                ? () async {
+                                    final title = titleCtrl.text.trim();
+                                    final dateTime = DateTime(
+                                      pickedDate!.year,
+                                      pickedDate!.month,
+                                      pickedDate!.day,
+                                      pickedTime!.hour,
+                                      pickedTime!.minute,
+                                    );
 
-                                  try {
+                                    try {
                                       final updated = Reminder(
                                         id: reminder.id, // importante
                                         carId: carId ?? reminder.carId,
                                         title: title,
                                         notifyAt: Timestamp.fromDate(dateTime),
-                                        notificationSent: reminder.notificationSent,
+                                        notificationSent:
+                                            reminder.notificationSent,
                                         pending: reminder.pending,
-                                        carName: widget.carName ?? reminder.carName,
+                                        carName:
+                                            widget.carName ?? reminder.carName,
                                         userId: reminder.userId,
                                       );
 
-                                      await _reminderService.updateReminder(updated);
-                                      Navigator.of(ctx).pop();
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text('Recordatorio actualizado')),
+                                      await _reminderService.updateReminder(
+                                        updated,
                                       );
-                                  } catch (e) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text('Error: ${e.toString()}')),
-                                    );
+                                      Navigator.of(ctx).pop();
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            context
+                                                .l10n
+                                                .reminder_updated_success,
+                                          ),
+                                        ),
+                                      );
+                                    } catch (e) {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Error: ${e.toString()}',
+                                          ),
+                                        ),
+                                      );
+                                    }
                                   }
-                                }
-                              : null,
+                                : null,
                             style: ElevatedButton.styleFrom(
                               minimumSize: const Size.fromHeight(48),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
                             ),
-                            child: Text('Actualizar'),
+                            child: Text(context.l10n.reminder_update),
                           ),
-                        
-                        
-                        
-                      )
-
-
-                    ],
-                  ),
-
-
-
-
-                ] else
-                    ElevatedButton(
-                        onPressed: canSave
-                            ? () async {
-                                final title = titleCtrl.text.trim();
-                                final dateTime = DateTime(
-                                  pickedDate!.year,
-                                  pickedDate!.month,
-                                  pickedDate!.day,
-                                  pickedTime!.hour,
-                                  pickedTime!.minute,
-                                );
-
-                                try {
-                                  final newReminder = Reminder(
-                                    carId: carId,
-                                    notificationSent: false,
-                                    notifyAt: Timestamp.fromDate(dateTime),
-                                    pending: false,
-                                    title: title,
-                                    carName: widget.carName ?? "Vehículo no encontrado",
-                                    userId: user!.uid,
-                                  );
-                                  await _reminderService.addReminder(newReminder);
-
-                                  Navigator.of(ctx).pop();
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('Recordatorio creado')),
-                                  );
-                                } catch (e) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text('Error: ${e.toString()}')),
-                                  );
-                                }
-                              }
-                            : null,
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(48),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                         ),
-                        child: const Text('Guardar'),
-                      ),
-                
+                      ],
+                    ),
+                  ] else
+                    ElevatedButton(
+                      onPressed: canSave
+                          ? () async {
+                              final title = titleCtrl.text.trim();
+                              final dateTime = DateTime(
+                                pickedDate!.year,
+                                pickedDate!.month,
+                                pickedDate!.day,
+                                pickedTime!.hour,
+                                pickedTime!.minute,
+                              );
 
-                // Espacio extra al final para separar del borde/gesto de arrastre
-                const SizedBox(height: 28),
-              ],
-            ),
-          );
-        });
+                              try {
+                                final newReminder = Reminder(
+                                  carId: carId,
+                                  notificationSent: false,
+                                  notifyAt: Timestamp.fromDate(dateTime),
+                                  pending: false,
+                                  title: title,
+                                  carName:
+                                      widget.carName ??
+                                      context.l10n.vehicle_not_found,
+                                  userId: user!.uid,
+                                );
+                                await _reminderService.addReminder(newReminder);
+
+                                Navigator.of(ctx).pop();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      context.l10n.reminder_created_success,
+                                    ),
+                                  ),
+                                );
+                              } catch (e) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text('Error: ${e.toString()}'),
+                                  ),
+                                );
+                              }
+                            }
+                          : null,
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size.fromHeight(48),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Text(context.l10n.reminder_save),
+                    ),
+
+                  // Espacio extra al final para separar del borde/gesto de arrastre
+                  const SizedBox(height: 28),
+                ],
+              ),
+            );
+          },
+        );
       },
     );
   }
-
-
 
   @override
   Widget build(BuildContext context) {
     final String? carid = widget.carId;
     final stream = (carid != null)
-      ? _reminderService.getRemindersForCar(carid)
-      : _reminderService.getReminders(_userId!);
-    
+        ? _reminderService.getRemindersForCar(carid)
+        : _reminderService.getReminders(_userId!);
+
     debugPrint("ReminderList.build: carId = $carid");
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mis Recordatorios'),
+        title: Text(context.l10n.appbar_reminders_title),
         automaticallyImplyLeading: false,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(4.0),
@@ -430,7 +500,7 @@ class _ReminderListState extends State<ReminderList> {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      
+
       body: StreamBuilder<List<Reminder>>(
         stream: stream,
         builder: (context, snapshot) {
@@ -441,9 +511,9 @@ class _ReminderListState extends State<ReminderList> {
             return Center(child: Text("Error: ${snapshot.error.toString()}"));
           }
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(
+            return Center(
               child: Text(
-                "No tienes recordatorios.\nVe a la sección 'Mis Vehículos' para añadir uno desde el detalle de tu auto.",
+                context.l10n.no_reminders_message,
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 18, color: Colors.grey),
               ),
@@ -467,11 +537,14 @@ class _ReminderListState extends State<ReminderList> {
                   bool showCarName = carid == null ? true : false;
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 10.0),
-                    child:
-                      GestureDetector(
-                        onTap: () => _showReminderSheet(context, _carId, reminder),
-                        child: ReminderCard(reminder: reminder, showCarName: showCarName),
-                      )
+                    child: GestureDetector(
+                      onTap: () =>
+                          _showReminderSheet(context, _carId, reminder),
+                      child: ReminderCard(
+                        reminder: reminder,
+                        showCarName: showCarName,
+                      ),
+                    ),
                   );
                 },
               ),
@@ -480,25 +553,17 @@ class _ReminderListState extends State<ReminderList> {
         },
       ),
 
-        
-        
-
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        floatingActionButton: Visibility(
-          visible: carid != null,
-          child: FloatingActionButton(
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: Visibility(
+        visible: carid != null,
+        child: FloatingActionButton(
           onPressed: () {
             _showReminderSheet(context, carid);
-
           },
           backgroundColor: Theme.of(context).colorScheme.primary,
           child: const Icon(Icons.add),
         ),
-
-
-        ),
-
+      ),
     );
   }
-  
 }

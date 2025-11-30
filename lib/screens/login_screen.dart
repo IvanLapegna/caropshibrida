@@ -1,3 +1,4 @@
+import 'package:caropshibrida/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 import '../services/validator_service.dart';
@@ -59,8 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
       } else {
         // Usuario existe pero NO está verificado
         setState(() {
-          _errorMessage =
-              'Por favor, verifica tu correo antes de iniciar sesión.';
+          _errorMessage = context.l10n.porFavorVerificaCorreo;
         });
         await _authService.signOut();
         return;
@@ -77,26 +77,26 @@ class _LoginScreenState extends State<LoginScreen> {
         case 'invalid-verification-code':
         case 'invalid-verification-id':
         case 'invalid-argument':
-          msg = 'Credenciales inválidas';
+          msg = context.l10n.credencialesInvalidas;
           break;
         case 'user-disabled':
-          msg = 'Usuario deshabilitado';
+          msg = context.l10n.usuarioDeshabilitado;
           break;
         case 'too-many-requests':
-          msg = 'Demasiados intentos. Probá más tarde.';
+          msg = context.l10n.demasiadosIntentos;
           break;
         case 'network-request-failed':
-          msg = 'Error de red. Verificá tu conexión.';
+          msg = context.l10n.errorRed;
           break;
         default:
           // Si querés ver el mensaje original en debug, imprimilo arriba.
-          msg = 'Error inesperado. Intentá nuevamente.';
+          msg = context.l10n.errorInesperado;
       }
       if (mounted) setState(() => _errorMessage = msg);
     } catch (e) {
       // cualquier otro error no-Firebase
       if (mounted) {
-        setState(() => _errorMessage = 'Error inesperado. Intentá nuevamente.');
+        setState(() => _errorMessage = context.l10n.errorInesperado);
       }
     } finally {
       // Siempre quitamos el loader
@@ -124,7 +124,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           children: [
                             AuthHeader(
                               assetPath: 'assets/mainlogo.svg',
-                              title: AppLocalizations.of(context)!.iniciarSesion,
+                              title: AppLocalizations.of(
+                                context,
+                              )!.iniciarSesion,
                               logoWidth: 160,
                               spaceTop: 40,
                             ),
@@ -152,17 +154,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
                             TextFormField(
                               controller: _emailCtrl,
-                              decoration: const InputDecoration(
-                                labelText: 'Email',
+                              decoration: InputDecoration(
+                                labelText: context.l10n.emailLabel,
                               ),
                               keyboardType: TextInputType.emailAddress,
                               validator: (v) {
                                 final value = (v ?? '').trim();
                                 if (value.isEmpty) {
-                                  return 'Debe ingresar correo';
+                                  return context.l10n.debeIngresarCorreo;
                                 }
                                 if (!_validatorService.isValidEmail(value)) {
-                                  return 'Correo inválido';
+                                  return context.l10n.correoInvalido;
                                 }
                                 return null;
                               },
@@ -171,14 +173,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             const SizedBox(height: 12),
                             TextFormField(
                               controller: _passCtrl,
-                              decoration: const InputDecoration(
-                                labelText: 'Contraseña',
+                              decoration: InputDecoration(
+                                labelText: context.l10n.contrasenaLabel,
                               ),
                               obscureText: true,
                               validator: (v) {
                                 final value = v ?? '';
                                 if (value.isEmpty) {
-                                  return 'Debe ingresar contraseña';
+                                  return context.l10n.debeIngresarContrasena;
                                 }
                                 return null;
                               },
@@ -201,7 +203,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                               ),
                                         ),
                                       )
-                                    : const Text('Entrar'),
+                                    : Text(context.l10n.entrar),
                               ),
                             ),
                             const SizedBox(height: 12),
@@ -217,7 +219,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () => Navigator.of(
                         context,
                       ).pushReplacementNamed('/register'),
-                      child: const Text('¿Ya tenes una cuenta? Inicia sesión'),
+                      child: Text(context.l10n.yaTenesCuentaIniciaSesion),
                     ),
                   ),
                 ],

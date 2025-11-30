@@ -1,7 +1,9 @@
+import 'package:caropshibrida/l10n/app_localizations.dart';
 import 'package:caropshibrida/models/expense_model.dart';
 import 'package:caropshibrida/models/expense_type_model.dart';
 import 'package:caropshibrida/services/auth_service.dart';
 import 'package:caropshibrida/services/expense_service.dart';
+import 'package:caropshibrida/utils/extensions.dart';
 import 'package:caropshibrida/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -129,9 +131,9 @@ class _ExpenseFormState extends State<ExpenseForm> {
       final user = _authService.currentUser;
 
       if (user == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: No has iniciado sesión.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(context.l10n.error_not_logged)));
         return;
       }
 
@@ -156,13 +158,13 @@ class _ExpenseFormState extends State<ExpenseForm> {
         try {
           await _expenseService.updateExpense(expense);
           Navigator.of(context).pop();
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Gasto guardado con éxito.')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(context.l10n.expense_saved_success)),
+          );
         } catch (e) {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text('Error al guardar: $e')));
+          ).showSnackBar(SnackBar(content: Text(context.l10n.error_saving(e))));
         } finally {
           setState(() {
             _isLoading = false;
@@ -172,13 +174,13 @@ class _ExpenseFormState extends State<ExpenseForm> {
         try {
           await _expenseService.addExpense(expense);
           Navigator.of(context).pop();
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Gasto añadido con éxito.')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(context.l10n.expense_added_success)),
+          );
         } catch (e) {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text('Error al añadir: $e')));
+          ).showSnackBar(SnackBar(content: Text(context.l10n.error_adding(e))));
         } finally {
           setState(() {
             _isLoading = false;
@@ -190,9 +192,10 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isEdit ? "Editar Gasto" : "Añadir Gasto"),
+        title: Text(_isEdit ? l10n.expense_edit_title : l10n.expense_add_title),
         centerTitle: true,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(4.0),
@@ -216,13 +219,13 @@ class _ExpenseFormState extends State<ExpenseForm> {
                   TextFormField(
                     controller: _descriptionController,
                     decoration: InputDecoration(
-                      labelText: "Descripción",
-                      hintText: "Ej: Combustible",
+                      labelText: l10n.expense_description_label,
+                      hintText: l10n.expense_description_hint,
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'La descripción del gasto es obligatoria';
+                        return l10n.expense_amount_required;
                       }
                       return null;
                     },
@@ -232,13 +235,13 @@ class _ExpenseFormState extends State<ExpenseForm> {
                   TextFormField(
                     controller: _amountController,
                     decoration: InputDecoration(
-                      labelText: "Monto",
+                      labelText: l10n.expense_amount_label,
                       hintText: "",
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "El monto del gasto es obligatorio";
+                        return l10n.expense_amount_required;
                       }
                       return null;
                     },
@@ -250,7 +253,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
                     readOnly: true,
                     onTap: () => _pickDate(context),
                     decoration: InputDecoration(
-                      labelText: "Fecha del gasto",
+                      labelText: l10n.expense_date_label,
                       border: OutlineInputBorder(),
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.calendar_today),
@@ -260,7 +263,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'La fecha de expiración es obligatoria';
+                        return l10n.expense_date_required;
                       }
                       return null;
                     },
@@ -272,7 +275,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
                       : DropdownButtonFormField(
                           value: _selectedExpenseTypeId,
                           decoration: InputDecoration(
-                            labelText: "Tipo de Gasto",
+                            labelText: l10n.expense_type_label,
                             border: OutlineInputBorder(),
                           ),
 
@@ -299,7 +302,7 @@ class _ExpenseFormState extends State<ExpenseForm> {
 
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return "El tipo de gasto es obligatorio";
+                              return l10n.expense_type_required;
                             }
                           },
                         ),
@@ -312,7 +315,11 @@ class _ExpenseFormState extends State<ExpenseForm> {
                       onPressed: _isLoading ? null : _submitForm,
                       child: _isLoading
                           ? const CircularProgressIndicator()
-                          : Text(_isEdit ? "Guardar cambios" : "Añadir gasto"),
+                          : Text(
+                              _isEdit
+                                  ? l10n.expense_save_changes
+                                  : l10n.expense_add,
+                            ),
                     ),
                   ),
                 ],

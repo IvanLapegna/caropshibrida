@@ -1,6 +1,7 @@
 import 'package:caropshibrida/models/insurance_model.dart';
 import 'package:caropshibrida/services/auth_service.dart';
 import 'package:caropshibrida/services/insurance_service.dart';
+import 'package:caropshibrida/utils/extensions.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -97,9 +98,9 @@ class _InsuranceFormState extends State<InsuranceForm> {
       final user = _authService.currentUser;
 
       if (user == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: No has iniciado sesión.')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(context.l10n.error_not_logged)));
         return;
       }
 
@@ -127,13 +128,13 @@ class _InsuranceFormState extends State<InsuranceForm> {
         try {
           await _insuranceService.updateInsurance(insurance, _selectedFile);
           Navigator.of(context).pop();
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Seguro guardado con éxito.')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(context.l10n.insurance_saved_success)),
+          );
         } catch (e) {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text('Error al guardar: $e')));
+          ).showSnackBar(SnackBar(content: Text(context.l10n.error_saving(e))));
         } finally {
           setState(() {
             _isLoading = false;
@@ -143,13 +144,13 @@ class _InsuranceFormState extends State<InsuranceForm> {
         try {
           await _insuranceService.addInsurance(insurance, _selectedFile);
           Navigator.of(context).pop();
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Seguro añadido con éxito.')));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(context.l10n.insurance_added_success)),
+          );
         } catch (e) {
           ScaffoldMessenger.of(
             context,
-          ).showSnackBar(SnackBar(content: Text('Error al añadir: $e')));
+          ).showSnackBar(SnackBar(content: Text(context.l10n.error_adding(e))));
         } finally {
           setState(() {
             _isLoading = false;
@@ -186,7 +187,11 @@ class _InsuranceFormState extends State<InsuranceForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isEdit ? "Editar Seguro" : "Añadir Seguro"),
+        title: Text(
+          _isEdit
+              ? context.l10n.insurance_edit_title
+              : context.l10n.insurance_add_title,
+        ),
         centerTitle: true,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(4.0),
@@ -210,12 +215,12 @@ class _InsuranceFormState extends State<InsuranceForm> {
                   TextFormField(
                     controller: _insuranceNameController,
                     decoration: InputDecoration(
-                      labelText: "Aseguradora",
+                      labelText: context.l10n.insurance_name_label,
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'El nombre de la aseguradora es obligatorio';
+                        return context.l10n.insurance_name_required;
                       }
                       return null;
                     },
@@ -225,12 +230,12 @@ class _InsuranceFormState extends State<InsuranceForm> {
                   TextFormField(
                     controller: _policyNumberController,
                     decoration: InputDecoration(
-                      labelText: "N° de póliza",
+                      labelText: context.l10n.policy_number_label,
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'El N° de póliza es obligatorio';
+                        return context.l10n.policy_number_required;
                       }
                       return null;
                     },
@@ -242,7 +247,7 @@ class _InsuranceFormState extends State<InsuranceForm> {
                     readOnly: true,
                     onTap: () => _pickDate(context),
                     decoration: InputDecoration(
-                      labelText: "Fecha de expiración",
+                      labelText: context.l10n.expiration_date_label,
                       border: OutlineInputBorder(),
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.calendar_today),
@@ -252,7 +257,7 @@ class _InsuranceFormState extends State<InsuranceForm> {
 
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'La fecha de expiración es obligatoria';
+                        return context.l10n.expiration_date_required;
                       }
                       return null;
                     },
@@ -262,12 +267,12 @@ class _InsuranceFormState extends State<InsuranceForm> {
                   TextFormField(
                     controller: _coverageController,
                     decoration: InputDecoration(
-                      labelText: "Tipo de cobertura",
+                      labelText: context.l10n.coverage_label,
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'El tipo de cobertura es obligatorio';
+                        return context.l10n.coverage_required;
                       }
                       return null;
                     },
@@ -277,12 +282,12 @@ class _InsuranceFormState extends State<InsuranceForm> {
                   TextFormField(
                     controller: _engineNumberController,
                     decoration: InputDecoration(
-                      labelText: "N° de motor",
+                      labelText: context.l10n.engine_number_label,
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'El N° de motor es obligatorio';
+                        return context.l10n.engine_number_required;
                       }
                       return null;
                     },
@@ -292,12 +297,12 @@ class _InsuranceFormState extends State<InsuranceForm> {
                   TextFormField(
                     controller: _chassisNumberController,
                     decoration: InputDecoration(
-                      labelText: "N° de chasis",
+                      labelText: context.l10n.chassis_number_label,
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'El N° de chasis es obligatorio';
+                        return context.l10n.chassis_number_required;
                       }
                       return null;
                     },
@@ -307,20 +312,20 @@ class _InsuranceFormState extends State<InsuranceForm> {
                   TextFormField(
                     controller: _policyHolderNameController,
                     decoration: InputDecoration(
-                      labelText: "Titular",
+                      labelText: context.l10n.policy_holder_label,
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'El nombre del titular es obligatorio';
+                        return context.l10n.policy_holder_required;
                       }
                       return null;
                     },
                   ),
                   SizedBox(height: 16.0),
 
-                  const Text(
-                    "Comprobante de Póliza Digital",
+                  Text(
+                    context.l10n.policy_document_title,
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 16),
@@ -335,7 +340,11 @@ class _InsuranceFormState extends State<InsuranceForm> {
                       onPressed: _isLoading ? null : _submitForm,
                       child: _isLoading
                           ? const CircularProgressIndicator()
-                          : Text(_isEdit ? "Guardar cambios" : "Añadir seguro"),
+                          : Text(
+                              _isEdit
+                                  ? context.l10n.save_changes_button
+                                  : context.l10n.add_insurance,
+                            ),
                     ),
                   ),
                 ],
@@ -373,7 +382,7 @@ class _InsuranceFormState extends State<InsuranceForm> {
     }
     // CASO 3: No hay nada (Prioridad Baja)
     else {
-      textToShow = "Tocar para subir Póliza (PDF o Foto)";
+      textToShow = context.l10n.pick_file_hint;
       iconToShow = Icons.upload_file;
       colorToShow = Colors.grey.shade100; // Gris: "Vacío"
       iconColor = Colors.grey;
@@ -401,7 +410,7 @@ class _InsuranceFormState extends State<InsuranceForm> {
                   if (_selectedFile == null &&
                       _insurance?.policyFileName != null)
                     Text(
-                      "Archivo actual:",
+                      context.l10n.current_file_label,
                       style: TextStyle(fontSize: 10, color: Colors.grey[600]),
                     ),
 

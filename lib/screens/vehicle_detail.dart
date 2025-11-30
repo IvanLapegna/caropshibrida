@@ -6,6 +6,7 @@ import 'package:caropshibrida/services/car_service.dart';
 import 'package:caropshibrida/services/expense_service.dart';
 import 'package:caropshibrida/services/insurance_service.dart';
 import 'package:caropshibrida/src/theme/colors.dart';
+import 'package:caropshibrida/utils/extensions.dart';
 import 'package:caropshibrida/utils/file_opener.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -68,14 +69,13 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
           return Center(child: Text('Error: ${snapshot.error}'));
         }
         if (!snapshot.hasData || snapshot.data == null) {
-            Future.microtask(() {
-                      Navigator.of(context).pop();
-                    });
-                    
-                    // Muestra una pantalla de carga o un mensaje temporal hasta que se complete la navegación.
-                    return const Scaffold(
-                      body: Center(child: Text('Vehículo eliminado. Volviendo a la lista...')),
-                    );        
+          Future.microtask(() {
+            Navigator.of(context).pop();
+          });
+
+          return Scaffold(
+            body: Center(child: Text(context.l10n.vehicle_deleted_message)),
+          );
         }
 
         final Car car = snapshot.data!;
@@ -122,24 +122,19 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                       Padding(
                         // android:layout_marginHorizontal="30dp"
                         padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                        child:                   
-                          SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.red,
-
-                              ),
-                              onPressed: () {
-                                _deleteCar(car);
-                              },
-                              child: Text(
-                                      "Eliminar vehículo",
-                                    ),
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
                             ),
+                            onPressed: () {
+                              _deleteCar(car);
+                            },
+                            child: Text(context.l10n.delete_vehicle_button),
                           ),
+                        ),
                       ),
-    
                     ],
                   ),
                 ),
@@ -194,13 +189,13 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                   );
                 },
                 errorBuilder: (context, error, stackTrace) {
-                  return const Center(
+                  return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.broken_image, size: 50, color: Colors.grey),
                         Text(
-                          "No disponible",
+                          context.l10n.not_available,
                           style: TextStyle(color: Colors.grey),
                         ),
                       ],
@@ -233,16 +228,20 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
           children: [
             _buildTopIconButton(
               icon: Icons.local_parking, // Mapeo de @drawable/parking_icon
-              label: 'Estacionar', // @string/estacionar
+              label: context.l10n.park_label, // @string/estacionar
               onPressed: () {
                 Navigator.pushNamed(context, '/parking', arguments: car);
               },
             ),
             _buildTopIconButton(
               icon: Icons.notifications, // Mapeo de @drawable/reminder_icon
-              label: 'Recordatorios', // @string/recordatorios
+              label: context.l10n.reminders_label, // @string/recordatorios
               onPressed: () {
-                Navigator.pushNamed(context, '/reminders', arguments: {"carId": car.id, "carName": car.toString()});
+                Navigator.pushNamed(
+                  context,
+                  '/reminders',
+                  arguments: {"carId": car.id, "carName": car.toString()},
+                );
               },
             ),
           ],
@@ -262,11 +261,11 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSectionHeader(
-              title: 'DATOS DEL VEHÍCULO',
+              title: context.l10n.section_vehicle_data,
               actions: [
                 IconButton(
                   icon: Icon(Icons.edit, color: appColorsLight.darkerGray),
-                  tooltip: 'Editar datos del vehículo',
+                  tooltip: context.l10n.edit_vehicle_tooltip,
                   onPressed: () {
                     Navigator.pushNamed(
                       context,
@@ -279,14 +278,18 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
             ),
             const SizedBox(height: 8.0),
             _buildInfoText(
-              'Última actualización: ${DateFormat('dd/MM/yyyy').format(car.lastUpdate)}',
+              "${context.l10n.last_update_label}: ${DateFormat('dd/MM/yyyy').format(car.lastUpdate)}",
             ),
-            _buildInfoText('Patente: ${car.licensePlate}'),
-            _buildInfoText('Marca: ${car.brand}'),
-            _buildInfoText('Modelo: ${car.model}'),
-            _buildInfoText('Año: ${car.anio}'),
-            _buildInfoText('Motor: ${car.engine}'),
-            _buildInfoText('Transmisión: ${car.transmission}'),
+            _buildInfoText(
+              "${context.l10n.license_plate_label}: ${car.licensePlate}",
+            ),
+            _buildInfoText('${context.l10n.brand_label}: ${car.brand}'),
+            _buildInfoText('${context.l10n.model_label}: ${car.model}'),
+            _buildInfoText('${context.l10n.year_label}: ${car.anio}'),
+            _buildInfoText('${context.l10n.engine_label}: ${car.engine}'),
+            _buildInfoText(
+              '${context.l10n.transmission_label}: ${car.transmission}',
+            ),
           ],
         ),
       ),
@@ -326,7 +329,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSectionHeader(
-              title: 'SEGURO',
+              title: context.l10n.insurance_section_title,
               actions: [
                 if (hasInsuranceData) ...[
                   IconButton(
@@ -334,7 +337,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                       Icons.description,
                       color: appColorsLight.darkerGray,
                     ),
-                    tooltip: 'Ver tarjeta circulación',
+                    tooltip: context.l10n.view_policy_tooltip,
                     onPressed: () {
                       if (insurance.policyFileUrl != null) {
                         FileOpener.openFile(
@@ -344,7 +347,9 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                         );
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('No hay un archivo cargado.')),
+                          SnackBar(
+                            content: Text(context.l10n.no_file_uploaded),
+                          ),
                         );
                         return;
                       }
@@ -352,7 +357,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                   ),
                   IconButton(
                     icon: Icon(Icons.edit, color: appColorsLight.darkerGray),
-                    tooltip: 'Editar datos seguro',
+                    tooltip: context.l10n.edit_insurance_tooltip,
                     onPressed: () {
                       Navigator.pushNamed(
                         context,
@@ -371,23 +376,35 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                 children: [
                   const SizedBox(height: 8.0),
                   _buildInfoText(
-                    'Última actualización: ${DateFormat('dd/MM/yyyy').format(insurance.lastUpdate)}',
+                    "${context.l10n.last_update_label}: ${DateFormat('dd/MM/yyyy').format(insurance.lastUpdate)}",
                   ),
-                  _buildInfoText('Aseguradora: ${insurance.insuranceName}'),
-                  _buildInfoText('N° de póliza: ${insurance.policyNumber}'),
                   _buildInfoText(
-                    'Fecha de vencimiento: ${DateFormat('dd/MM/yyyy').format(insurance.expirationDate)}',
+                    "${context.l10n.insurance_name_label}: ${insurance.insuranceName}",
                   ),
-                  _buildInfoText('Tipo de cobertura: ${insurance.coverage}'),
-                  _buildInfoText('N° de motor: ${insurance.engineNumber}'),
-                  _buildInfoText('N° de chasis: ${insurance.chassisNumber}'),
-                  _buildInfoText('Titular: ${insurance.policyHolderName}'),
+                  _buildInfoText(
+                    '${context.l10n.policy_number_label}: ${insurance.policyNumber}',
+                  ),
+                  _buildInfoText(
+                    '${context.l10n.expiration_date_label}: ${DateFormat('dd/MM/yyyy').format(insurance.expirationDate)}',
+                  ),
+                  _buildInfoText(
+                    '${context.l10n.coverage_label}: ${insurance.coverage}',
+                  ),
+                  _buildInfoText(
+                    '${context.l10n.engine_number_label}: ${insurance.engineNumber}',
+                  ),
+                  _buildInfoText(
+                    '${context.l10n.chassis_number_label}: ${insurance.chassisNumber}',
+                  ),
+                  _buildInfoText(
+                    '${context.l10n.policy_holder_label}: ${insurance.policyHolderName}',
+                  ),
                 ],
               ),
             ] else ...[
               _buildAddDataWidget(
-                message: 'No hay un seguro asociado.',
-                buttonText: 'Agregar Seguro',
+                message: context.l10n.add_insurance_message,
+                buttonText: context.l10n.add_insurance_button,
                 onPressed: () {
                   Navigator.pushNamed(
                     context,
@@ -414,14 +431,14 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSectionHeader(
-              title: "GASTOS RECIENTES",
+              title: context.l10n.expenses_section_title,
               actions: [
                 IconButton(
                   icon: Icon(
                     Icons.add_circle_outline,
                     color: appColorsLight.darkerGray,
                   ),
-                  tooltip: 'Añadir gasto',
+                  tooltip: context.l10n.expense_add,
                   onPressed: () {
                     Navigator.pushNamed(
                       context,
@@ -432,7 +449,7 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
                 ),
                 IconButton(
                   icon: Icon(Icons.list, color: appColorsLight.darkerGray),
-                  tooltip: 'Ver gastos del vehículo',
+                  tooltip: context.l10n.view_expenses_tooltip,
                   onPressed: () {
                     Navigator.pushNamed(
                       context,
@@ -468,8 +485,8 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
 
                 if (expenses.isEmpty) {
                   return _buildAddDataWidget(
-                    message: "Ningún gasto registrado",
-                    buttonText: "Agregar Gasto",
+                    message: context.l10n.no_expenses_registered,
+                    buttonText: context.l10n.add_expense_button,
                     onPressed: () {
                       Navigator.pushNamed(
                         context,
@@ -593,21 +610,15 @@ class _CarDetailScreenState extends State<CarDetailScreen> {
   }
 
   void _deleteCar(Car car) async {
-
-        try {
-          await _carService.deleteCar(car);
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Vehículo creado con éxito.')));
-        } catch (e) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Error al crear: $e')));
-        } 
-        
-
-
-
-
+    try {
+      await _carService.deleteCar(car);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.vehicle_created_success)),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(context.l10n.error_creating(e))));
+    }
   }
 }

@@ -100,6 +100,84 @@ abstract class AppLocalizations {
     Locale('pt'),
   ];
 
+  /// No description provided for @language_es.
+  ///
+  /// In es, this message translates to:
+  /// **'Español'**
+  String get language_es;
+
+  /// No description provided for @language_en.
+  ///
+  /// In es, this message translates to:
+  /// **'Inglés'**
+  String get language_en;
+
+  /// No description provided for @language_pt.
+  ///
+  /// In es, this message translates to:
+  /// **'Portugués'**
+  String get language_pt;
+
+  /// No description provided for @select_language.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar Idioma'**
+  String get select_language;
+
+  /// No description provided for @language_label.
+  ///
+  /// In es, this message translates to:
+  /// **'Idioma'**
+  String get language_label;
+
+  /// No description provided for @settings_general_section.
+  ///
+  /// In es, this message translates to:
+  /// **'General'**
+  String get settings_general_section;
+
+  /// No description provided for @settings_notifications_section.
+  ///
+  /// In es, this message translates to:
+  /// **'Notificaciones'**
+  String get settings_notifications_section;
+
+  /// No description provided for @settings_permissions_section.
+  ///
+  /// In es, this message translates to:
+  /// **'Permisos y Sistema'**
+  String get settings_permissions_section;
+
+  /// No description provided for @settings_info_section.
+  ///
+  /// In es, this message translates to:
+  /// **'Información'**
+  String get settings_info_section;
+
+  /// No description provided for @settings_receive_notifications.
+  ///
+  /// In es, this message translates to:
+  /// **'Recibir notificaciones'**
+  String get settings_receive_notifications;
+
+  /// No description provided for @settings_camera_permission.
+  ///
+  /// In es, this message translates to:
+  /// **'Acceso a Cámara'**
+  String get settings_camera_permission;
+
+  /// No description provided for @settings_system_settings.
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir configuración del sistema'**
+  String get settings_system_settings;
+
+  /// No description provided for @settings_version.
+  ///
+  /// In es, this message translates to:
+  /// **'Versión'**
+  String get settings_version;
+
   /// No description provided for @iniciarSesion.
   ///
   /// In es, this message translates to:
@@ -1006,48 +1084,6 @@ abstract class AppLocalizations {
   /// **'Editar datos del vehículo'**
   String get edit_vehicle_tooltip;
 
-  /// No description provided for @last_update_label.
-  ///
-  /// In es, this message translates to:
-  /// **'Última actualización: {date}'**
-  String last_update_label(Object date);
-
-  /// No description provided for @license_plate_label.
-  ///
-  /// In es, this message translates to:
-  /// **'Patente'**
-  String license_plate_label(Object license);
-
-  /// No description provided for @brand_label.
-  ///
-  /// In es, this message translates to:
-  /// **'Marca'**
-  String brand_label(Object brand);
-
-  /// No description provided for @model_label.
-  ///
-  /// In es, this message translates to:
-  /// **'Modelo'**
-  String model_label(Object model);
-
-  /// No description provided for @year_label.
-  ///
-  /// In es, this message translates to:
-  /// **'Año'**
-  String year_label(Object year);
-
-  /// No description provided for @engine_label.
-  ///
-  /// In es, this message translates to:
-  /// **'Motor'**
-  String engine_label(Object engine);
-
-  /// No description provided for @transmission_label.
-  ///
-  /// In es, this message translates to:
-  /// **'Transmisión'**
-  String transmission_label(Object transmission);
-
   /// No description provided for @insurance_section_title.
   ///
   /// In es, this message translates to:
@@ -1137,6 +1173,48 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Añadir Vehículo'**
   String get vehicle_add_title;
+
+  /// No description provided for @last_update_label.
+  ///
+  /// In es, this message translates to:
+  /// **'Última actualización'**
+  String get last_update_label;
+
+  /// No description provided for @brand_label.
+  ///
+  /// In es, this message translates to:
+  /// **'Marca'**
+  String get brand_label;
+
+  /// No description provided for @model_label.
+  ///
+  /// In es, this message translates to:
+  /// **'Modelo'**
+  String get model_label;
+
+  /// No description provided for @year_label.
+  ///
+  /// In es, this message translates to:
+  /// **'Año'**
+  String get year_label;
+
+  /// No description provided for @license_plate_label.
+  ///
+  /// In es, this message translates to:
+  /// **'Patente'**
+  String get license_plate_label;
+
+  /// No description provided for @engine_label.
+  ///
+  /// In es, this message translates to:
+  /// **'Motor'**
+  String get engine_label;
+
+  /// No description provided for @transmission_label.
+  ///
+  /// In es, this message translates to:
+  /// **'Transmisión'**
+  String get transmission_label;
 
   /// No description provided for @brand_required.
   ///
