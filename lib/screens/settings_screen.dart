@@ -23,7 +23,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _loadPreferences();
   }
 
-  // Cargar estado de las notificaciones
   Future<void> _loadPreferences() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -32,17 +31,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
   }
 
-  // Guardar estado de las notificaciones
-  Future<void> _toggleNotifications(bool value) async {
-    setState(() => _notificationsEnabled = value);
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('notifications_enabled', value);
+  Future<void> _checkNotificationPermission() async {
+    var status = await Permission.notification.status;
 
-    // Aquí podrías agregar lógica extra:
-    // if (value) subscribeToTopic() else unsubscribe()
+    if (!mounted) return;
+
+    if (status.isGranted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Permiso de notificaciones ya concedido")),
+      );
+    } else if (status.isDenied) {
+      if (await Permission.notification.request().isGranted) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Permiso de notificaciones concedido"),
+            ),
+          );
+        }
+      }
+    } else if (status.isPermanentlyDenied) {
+      openAppSettings();
+    }
   }
 
-  // Lógica de Permisos (Cámara)
   Future<void> _checkCameraPermission() async {
     var status = await Permission.camera.status;
     if (!mounted) return;
@@ -60,7 +72,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         }
       }
     } else if (status.isPermanentlyDenied) {
-      openAppSettings(); // Abre configuración nativa
+      openAppSettings();
     }
   }
 
@@ -114,12 +126,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
           if (!kIsWeb) ...[
             _buildSectionHeader(l10n.settings_notifications_section),
 
-            SwitchListTile(
-              secondary: const Icon(Icons.notifications_active),
+            ListTile(
+              leading: const Icon(Icons.notifications_active),
               title: Text(l10n.settings_receive_notifications),
-              value: _notificationsEnabled,
-              onChanged: _toggleNotifications,
-              activeColor: Theme.of(context).colorScheme.primary,
+              trailing: const Icon(Icons.notifications_active, size: 20),
+              onTap: _checkNotificationPermission,
             ),
 
             const Divider(),

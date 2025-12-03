@@ -46,7 +46,7 @@ class Car {
       "userId": userId,
       "imageUrl": imageUrl,
       "insuranceId": insuranceId,
-      "lastUpdated": lastUpdate,
+      "lastUpdate": lastUpdate,
       "parked": parked,
       "parkingDate": parkingDate,
       "parkedLat": parkedLat,
